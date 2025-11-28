@@ -47,28 +47,28 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
     // Filtrer på kategorier (ELLER innenfor kategorier)
     if (filters.categories.length > 0) {
       filtered = filtered.filter(tool =>
-        tool.categories.some(cat => filters.categories.includes(cat))
+        tool.categories && tool.categories.some(cat => filters.categories.includes(cat))
       )
     }
 
     // Filtrer på type (ELLER innenfor typer)
     if (filters.types.length > 0) {
       filtered = filtered.filter(tool =>
-        filters.types.includes(tool.tool_type)
+        tool.tool_type && filters.types.includes(tool.tool_type)
       )
     }
 
     // Filtrer på prismodell (ELLER innenfor pris)
     if (filters.pricing.length > 0) {
       filtered = filtered.filter(tool =>
-        filters.pricing.includes(tool.pricing_model)
+        tool.pricing_model && filters.pricing.includes(tool.pricing_model)
       )
     }
 
     // Filtrer på regioner (ELLER innenfor regioner)
     if (filters.regions.length > 0) {
       filtered = filtered.filter(tool =>
-        tool.regions.some(region =>
+        tool.regions && tool.regions.some(region =>
           filters.regions.includes(region) ||
           (filters.regions.includes('global') && region === 'global')
         )
@@ -78,7 +78,7 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
     // Filtrer på intel cycle phase (ELLER innenfor faser)
     if (filters.phases.length > 0) {
       filtered = filtered.filter(tool =>
-        tool.intel_cycle_phases.some(phase => filters.phases.includes(phase))
+        tool.intel_cycle_phases && tool.intel_cycle_phases.some(phase => filters.phases.includes(phase))
       )
     }
 
