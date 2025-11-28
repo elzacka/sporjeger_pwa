@@ -27,27 +27,27 @@ export function ToolCard({ tool }: ToolCardProps) {
         </h2>
         <div className={styles.badges}>
           {tool.tool_type === 'terminal' && (
-            <span className={styles.badge} data-type="terminal" title="Terminalverktoy">
-              {t.badge.terminal}
+            <span className={styles.badge} data-type="terminal" title="Terminalverktøy - kjøres i terminal/kommandolinje">
+              Terminal
             </span>
           )}
           {tool.requires_registration && (
-            <span className={styles.badge} data-type="registration" title="Krever registrering">
-              {t.badge.registration}
+            <span className={styles.badge} data-type="registration" title="Krever registrering for å bruke">
+              Registrering
             </span>
           )}
           {tool.requires_manual_url && (
-            <span className={styles.badge} data-type="manual" title="Krever manuell URL-redigering">
-              {t.badge.manual}
+            <span className={styles.badge} data-type="manual" title="Krever manuell redigering av URL">
+              Manuell URL
             </span>
           )}
           {tool.pricing_model && tool.pricing_model !== 'free' && (
             <span
               className={styles.badge}
               data-type={tool.pricing_model}
-              title={t.pricing[tool.pricing_model] ?? tool.pricing_model}
+              title={tool.pricing_model === 'freemium' ? 'Gratis med betalte funksjoner' : 'Betalt tjeneste'}
             >
-              {tool.pricing_model === 'freemium' ? '$' : '$$'}
+              {tool.pricing_model === 'freemium' ? 'Gratish' : 'Betalt'}
             </span>
           )}
         </div>
@@ -59,11 +59,12 @@ export function ToolCard({ tool }: ToolCardProps) {
 
       <div className={styles.footer}>
         <span className={styles.url}>{displayUrl}</span>
-        {tool.category_names && tool.category_names.length > 0 && (
+        {tool.category_slugs && tool.category_slugs.length > 0 && (
           <span className={styles.categories}>
-            {tool.category_names
-              .map(name => t.category[(name ?? '').toLowerCase().replace(/\s+/g, '-') as keyof typeof t.category] ?? name)
-              .slice(0, 2)
+            {tool.category_slugs
+              .filter(slug => slug != null)
+              .map(slug => t.category[slug as keyof typeof t.category] ?? slug)
+              .slice(0, 3)
               .join(' · ')}
           </span>
         )}

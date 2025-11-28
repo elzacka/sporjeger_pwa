@@ -61,7 +61,8 @@ export interface ToolCategory {
 
 // View types
 export interface ToolWithCategories extends Tool {
-  categories: string[] // category slugs
+  categories: string[] // category slugs (alias for category_slugs)
+  category_slugs: string[] // from view
   category_names: string[]
 }
 

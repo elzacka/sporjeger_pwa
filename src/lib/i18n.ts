@@ -52,6 +52,7 @@ export const t = {
     'archiving': 'Arkivering',
     'public-records': 'Offentlige registre',
     'phone': 'Telefon',
+    'metadata': 'Metadata',
     'metadata-documents': 'Metadata',
     'dark-web': 'Mørkt nett',
     'cybersecurity': 'Cybersikkerhet',
@@ -72,7 +73,7 @@ export const t = {
     showLess: 'Vis færre',
     tools: 'verktøy',
     tool: 'verktøy',
-    footer: 'Sporjeger er en norsk OSINT-katalog.',
+    footer: 'Sporjeger — en OSINT-katalog for digital skattejakt',
     loading: 'Laster...',
     offline: 'Du er frakoblet. Viser bufret data.',
 

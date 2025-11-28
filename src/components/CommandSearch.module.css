@@ -178,29 +178,119 @@
   color: var(--text-muted);
 }
 
-/* Hurtigfiltre */
-.quickFilters {
+/* Velkomstområde */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding-top: var(--space-md);
+}
+
+.toolCount {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Expandable filter-boks */
+.filterBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filterToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.filterToggle:hover {
+  color: var(--text-secondary);
+}
+
+.filterToggle.open {
+  color: var(--text-secondary);
+}
+
+.toggleIcon {
+  transition: transform 0.2s ease;
+}
+
+.filterToggle.open .toggleIcon {
+  transform: rotate(180deg);
+}
+
+/* Filter-panel */
+.filterPanel {
+  width: 100%;
+  padding: var(--space-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.filterSectionLabel {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filterButtons {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-xs);
 }
 
-.quickFilter {
+.filterButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   color: var(--text-secondary);
   background: transparent;
-  border: 1px solid transparent;
+  border: 1px solid var(--border-light);
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.1s ease;
 }
 
-.quickFilter:hover {
+.filterButton:hover {
   color: var(--text-primary);
   background: var(--bg-secondary);
-  border-color: var(--border-light);
+  border-color: var(--border);
+}
+
+.filterButton.active {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+  border-color: var(--accent);
+}
+
+.filterCount {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
 }
 
 /* Responsiv */
@@ -217,9 +307,9 @@
     font-size: 0.75rem;
   }
 
-  .quickFilter {
-    font-size: 0.875rem;
-    padding: var(--space-sm) var(--space-md);
+  .filterButton {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-sm);
   }
 }
 

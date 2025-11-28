@@ -22,6 +22,19 @@ interface CommandSearchProps {
   onClearAll: () => void
 }
 
+// Placeholder-tekster som roterer
+const placeholderTexts = [
+  'Let i arkiver...',
+  'Finn sårbarheter...',
+  'Spor fartøy...',
+  'Søk i sosiale medier...',
+  'Finn folk...',
+  'Analyser store datamengder...',
+  'Finn mønstre...',
+  'Bruk verktøy for geolokalisering...',
+  'Analyser nettsider...',
+]
+
 // Alle filterverdier med norske labels
 const typeFilters: { value: ToolType; label: string }[] = [
   { value: 'web', label: 'Nettside' },
@@ -47,11 +60,12 @@ const regionFilters = [
   { value: 'DK', label: 'Danmark' },
 ]
 
+// OSINT-syklus i korrekt rekkefølge
 const phaseFilters: { value: IntelCyclePhase; label: string }[] = [
-  { value: 'collection', label: 'Innsamling' },
-  { value: 'analysis', label: 'Analyse' },
-  { value: 'processing', label: 'Prosessering' },
   { value: 'planning', label: 'Planlegging' },
+  { value: 'collection', label: 'Innsamling' },
+  { value: 'processing', label: 'Prosessering' },
+  { value: 'analysis', label: 'Analyse' },
   { value: 'dissemination', label: 'Formidling' },
 ]
 
@@ -67,6 +81,16 @@ export function CommandSearch({
   const inputRef = useRef<HTMLInputElement>(null)
   const [isExpanded, setIsExpanded] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [placeholderIndex, setPlaceholderIndex] = useState(0)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+
+  // Roter placeholder-tekst
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex(i => (i + 1) % placeholderTexts.length)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   // Bygg suggestions basert på query
   const suggestions = useMemo(() => {
@@ -204,6 +228,22 @@ export function CommandSearch({
 
   const hasContent = query || activeFilters.length > 0
 
+  // Sorter kategorier alfabetisk på norsk navn (kun de med verktøy)
+  const sortedCategories = useMemo(() => {
+    if (!categories) return []
+    return [...categories]
+      .filter(cat => (cat.tool_count ?? 0) > 0)
+      .sort((a, b) => {
+        const nameA = t.category[a.slug as keyof typeof t.category] ?? a.name
+        const nameB = t.category[b.slug as keyof typeof t.category] ?? b.name
+        return nameA.localeCompare(nameB, 'nb')
+      })
+  }, [categories])
+
+  // Sjekk om et filter allerede er aktivt
+  const isFilterActive = (type: FilterType, value: string) =>
+    activeFilters.some(f => f.type === type && f.value === value)
+
   return (
     <div className={styles.container}>
       <div className={`${styles.inputWrapper} ${isExpanded ? styles.expanded : ''}`}>
@@ -228,6 +268,7 @@ export function CommandSearch({
             type="text"
             className={styles.input}
             value={query}
+            placeholder={activeFilters.length === 0 ? placeholderTexts[placeholderIndex] : ''}
             onChange={e => {
               onQueryChange(e.target.value)
               setSelectedIndex(0)
@@ -287,25 +328,83 @@ export function CommandSearch({
         </ul>
       )}
 
-      {/* Hurtigfiltre når ingen søk er aktivt */}
-      {!hasContent && !isExpanded && categories && categories.length > 0 && (
-        <div className={styles.quickFilters}>
-          {categories.slice(0, 6).map(cat => (
-            <button
-              key={cat.id}
-              type="button"
-              className={styles.quickFilter}
-              onClick={() => onAddFilter({
-                type: 'category',
-                value: cat.slug,
-                label: t.category[cat.slug as keyof typeof t.category] ?? cat.name
-              })}
-            >
-              {t.category[cat.slug as keyof typeof t.category] ?? cat.name}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Expandable filter-boks */}
+      <div className={styles.filterBox}>
+        <button
+          type="button"
+          className={`${styles.filterToggle} ${filtersOpen ? styles.open : ''}`}
+          onClick={() => setFiltersOpen(!filtersOpen)}
+          aria-expanded={filtersOpen}
+          aria-controls="filter-panel"
+        >
+          <span>Filtre</span>
+          <svg
+            className={styles.toggleIcon}
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <path d="M3 4.5L6 7.5L9 4.5" />
+          </svg>
+        </button>
+
+        {filtersOpen && (
+          <div id="filter-panel" className={styles.filterPanel}>
+            {/* OSINT-faser */}
+            <div className={styles.filterSection}>
+              <span className={styles.filterSectionLabel}>Fase</span>
+              <div className={styles.filterButtons}>
+                {phaseFilters.map(phase => (
+                  <button
+                    key={phase.value}
+                    type="button"
+                    className={`${styles.filterButton} ${isFilterActive('phase', phase.value) ? styles.active : ''}`}
+                    onClick={() => {
+                      if (isFilterActive('phase', phase.value)) {
+                        onRemoveFilter({ type: 'phase', value: phase.value, label: phase.label })
+                      } else {
+                        onAddFilter({ type: 'phase', value: phase.value, label: phase.label })
+                      }
+                    }}
+                  >
+                    {phase.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Kategorier alfabetisk */}
+            <div className={styles.filterSection}>
+              <span className={styles.filterSectionLabel}>Kategori</span>
+              <div className={styles.filterButtons}>
+                {sortedCategories.map(cat => {
+                  const label = t.category[cat.slug as keyof typeof t.category] ?? cat.name
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      className={`${styles.filterButton} ${isFilterActive('category', cat.slug) ? styles.active : ''}`}
+                      onClick={() => {
+                        if (isFilterActive('category', cat.slug)) {
+                          onRemoveFilter({ type: 'category', value: cat.slug, label })
+                        } else {
+                          onAddFilter({ type: 'category', value: cat.slug, label })
+                        }
+                      }}
+                    >
+                      {label}
+                      <span className={styles.filterCount}>({cat.tool_count})</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

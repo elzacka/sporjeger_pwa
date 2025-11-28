@@ -13,6 +13,17 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+// Parser intel_cycle_phases fra PostgreSQL array-streng til JS array
+function parsePostgresArray(value: string | string[] | null): string[] {
+  if (!value) return []
+  if (Array.isArray(value)) return value
+  // Håndter PostgreSQL array format: "{collection,analysis}"
+  if (typeof value === 'string' && value.startsWith('{')) {
+    return value.slice(1, -1).split(',').filter(Boolean)
+  }
+  return []
+}
+
 // Hent alle aktive verktøy med kategorier
 export async function getTools(): Promise<ToolWithCategories[]> {
   const { data, error } = await supabase
@@ -26,7 +37,14 @@ export async function getTools(): Promise<ToolWithCategories[]> {
     return []
   }
 
-  return data ?? []
+  // Transformer data for å matche forventet struktur
+  return (data ?? []).map(tool => ({
+    ...tool,
+    // Map category_slugs til categories for kompatibilitet
+    categories: tool.category_slugs ?? [],
+    // Parse intel_cycle_phases hvis det er en streng
+    intel_cycle_phases: parsePostgresArray(tool.intel_cycle_phases)
+  }))
 }
 
 // Hent alle kategorier med antall verktøy

@@ -3,11 +3,13 @@ import { useFilters } from '@/hooks/useFilters'
 import { useSearch } from '@/hooks/useSearch'
 import { CommandSearch } from '@/components/CommandSearch'
 import { ToolList } from '@/components/ToolList'
+import { HelpGuide } from '@/components/HelpGuide'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
 
 export default function App() {
   const { tools, categories, isLoading, error, isOffline } = useTools()
+
   const {
     query,
     setQuery,
@@ -70,7 +72,8 @@ export default function App() {
       </main>
 
       <footer className={styles.footer}>
-        {t.ui.footer}
+        <span>{t.ui.footer}</span>
+        <HelpGuide />
       </footer>
     </div>
   )
