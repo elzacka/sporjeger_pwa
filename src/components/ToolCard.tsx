@@ -8,7 +8,7 @@ interface ToolCardProps {
 
 export function ToolCard({ tool }: ToolCardProps) {
   // Ekstraher domene fra URL for visning
-  const displayUrl = tool.url
+  const displayUrl = (tool.url ?? '')
     .replace(/^https?:\/\//, '')
     .replace(/\/$/, '')
 
@@ -17,7 +17,7 @@ export function ToolCard({ tool }: ToolCardProps) {
       <div className={styles.header}>
         <h2 className={styles.name}>
           <a
-            href={tool.url}
+            href={tool.url ?? '#'}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
@@ -27,7 +27,7 @@ export function ToolCard({ tool }: ToolCardProps) {
         </h2>
         <div className={styles.badges}>
           {tool.tool_type === 'terminal' && (
-            <span className={styles.badge} data-type="terminal\" title="Terminalverktøy">
+            <span className={styles.badge} data-type="terminal" title="Terminalverktoy">
               {t.badge.terminal}
             </span>
           )}
@@ -41,11 +41,11 @@ export function ToolCard({ tool }: ToolCardProps) {
               {t.badge.manual}
             </span>
           )}
-          {tool.pricing_model !== 'free' && (
+          {tool.pricing_model && tool.pricing_model !== 'free' && (
             <span
               className={styles.badge}
               data-type={tool.pricing_model}
-              title={t.pricing[tool.pricing_model]}
+              title={t.pricing[tool.pricing_model] ?? tool.pricing_model}
             >
               {tool.pricing_model === 'freemium' ? '$' : '$$'}
             </span>
@@ -59,10 +59,10 @@ export function ToolCard({ tool }: ToolCardProps) {
 
       <div className={styles.footer}>
         <span className={styles.url}>{displayUrl}</span>
-        {tool.category_names.length > 0 && (
+        {tool.category_names && tool.category_names.length > 0 && (
           <span className={styles.categories}>
             {tool.category_names
-              .map(name => t.category[name.toLowerCase().replace(/\s+/g, '-') as keyof typeof t.category] ?? name)
+              .map(name => t.category[(name ?? '').toLowerCase().replace(/\s+/g, '-') as keyof typeof t.category] ?? name)
               .slice(0, 2)
               .join(' · ')}
           </span>
