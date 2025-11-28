@@ -1,10 +1,10 @@
 import { useMemo, useDeferredValue } from 'react'
-import Fuse from 'fuse.js'
-import type { ToolWithCategories, ToolType, PricingModel, IntelCyclePhase } from '@/types/database'
+import Fuse, { type IFuseOptions } from 'fuse.js'
+import type { ToolWithCategories } from '@/types/database'
 import type { ParsedFilters } from './useFilters'
 
 // Fuse.js konfigurasjon for fuzzy search
-const fuseOptions: Fuse.IFuseOptions<ToolWithCategories> = {
+const fuseOptions: IFuseOptions<ToolWithCategories> = {
   keys: [
     { name: 'name', weight: 3 },
     { name: 'description', weight: 2 },

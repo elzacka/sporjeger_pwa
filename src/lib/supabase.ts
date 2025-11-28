@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Tool, Category, ToolWithCategories, CategoryWithCount } from '@/types/database'
+import type { ToolWithCategories, CategoryWithCount } from '@/types/database'
 
 // Disse verdiene må fylles inn med dine Supabase-credentials
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? ''

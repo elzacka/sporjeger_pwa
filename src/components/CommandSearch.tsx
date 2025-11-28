@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import type { CategoryWithCount, ToolType, PricingModel, IntelCyclePhase } from '@/types/database'
 import { t } from '@/lib/i18n'
 import styles from './CommandSearch.module.css'
@@ -207,7 +207,7 @@ export function CommandSearch({
       <div className={`${styles.inputWrapper} ${isExpanded ? styles.expanded : ''}`}>
         {/* Aktive filtre som tags inne i input-feltet */}
         <div className={styles.inputContent}>
-          {activeFilters.map((filter, i) => (
+          {activeFilters.map((filter) => (
             <span key={`${filter.type}-${filter.value}`} className={styles.filterTag}>
               <span className={styles.filterType}>{filter.type === 'category' ? '' : `${getFilterTypeLabel(filter.type)}:`}</span>
               {filter.label}
