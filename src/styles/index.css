@@ -1,0 +1,140 @@
+/*
+ * Sporjeger - Minimalistisk OSINT-verktøykatalog
+ * Design: Retro-inspirert, distraksjonsfritt, behagelig for øynene
+ */
+
+:root {
+  /* Farger - varme, dempede toner */
+  --bg-primary: #F4F1EA;
+  --bg-secondary: #EBE7DE;
+  --bg-hover: #E2DED4;
+
+  --text-primary: #2C2C2C;
+  --text-secondary: #5A5A5A;
+  --text-muted: #8A8A8A;
+
+  --accent: #1a5f7a;
+  --accent-hover: #134a5f;
+
+  --border: #D4D0C6;
+  --border-light: #E8E4DA;
+
+  /* Badge-farger */
+  --badge-terminal: #6B705C;
+  --badge-registration: #9B2915;
+  --badge-manual: #7B6D4D;
+  --badge-free: #4A7C59;
+  --badge-freemium: #7B6D4D;
+  --badge-paid: #9B2915;
+
+  /* Typografi */
+  --font-mono: 'DM Mono', 'Consolas', monospace;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Layout */
+  --max-width: 720px;
+  --line-height: 1.6;
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: var(--line-height);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Hovedcontainer */
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Lenker */
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Fokus-stiler for tilgjengelighet */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Skjul visuelt men behold for skjermlesere */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Animasjoner - respekter prefers-reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    transition-property: background-color, border-color, color, opacity, transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
+  }
+}
+
+/* Scrollbar-styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--accent);
+  color: white;
+}
