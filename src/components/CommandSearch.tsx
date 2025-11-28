@@ -76,17 +76,19 @@ export function CommandSearch({
     const results: { type: FilterType; value: string; label: string; matchedOn: string }[] = []
 
     // Søk i kategorier
-    categories.forEach(cat => {
-      const norwegianName = t.category[cat.slug as keyof typeof t.category] ?? cat.name
-      if (norwegianName.toLowerCase().includes(q) || cat.slug.includes(q)) {
-        results.push({
-          type: 'category',
-          value: cat.slug,
-          label: norwegianName,
-          matchedOn: 'kategori'
-        })
-      }
-    })
+    if (categories && categories.length > 0) {
+      categories.forEach(cat => {
+        const norwegianName = t.category[cat.slug as keyof typeof t.category] ?? cat.name
+        if (norwegianName.toLowerCase().includes(q) || cat.slug.includes(q)) {
+          results.push({
+            type: 'category',
+            value: cat.slug,
+            label: norwegianName,
+            matchedOn: 'kategori'
+          })
+        }
+      })
+    }
 
     // Søk i verktøytyper
     typeFilters.forEach(tf => {
@@ -286,7 +288,7 @@ export function CommandSearch({
       )}
 
       {/* Hurtigfiltre når ingen søk er aktivt */}
-      {!hasContent && !isExpanded && (
+      {!hasContent && !isExpanded && categories && categories.length > 0 && (
         <div className={styles.quickFilters}>
           {categories.slice(0, 6).map(cat => (
             <button
