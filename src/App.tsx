@@ -9,19 +9,42 @@ import { AdminPanel } from '@/components/AdminPanel'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
 
-// Enkel hash-basert ruting
+// Admin-nokkel fra miljovariabel (sett i .env)
+const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || ''
+
+// Enkel hash-basert ruting med query params
 function useHashRoute() {
-  const [route, setRoute] = useState(window.location.hash.slice(1) || '/')
+  const [route, setRoute] = useState(() => {
+    const hash = window.location.hash.slice(1) || '/'
+    return hash.split('?')[0] // Fjern query params fra rute
+  })
 
   useEffect(() => {
     const handleHashChange = () => {
-      setRoute(window.location.hash.slice(1) || '/')
+      const hash = window.location.hash.slice(1) || '/'
+      setRoute(hash.split('?')[0])
     }
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
   return route
+}
+
+// Sjekk om admin-nokkel er gyldig
+function checkAdminAccess(): boolean {
+  // Hvis ingen nokkel er satt i env, tillat tilgang (utvikling)
+  if (!ADMIN_KEY) return true
+
+  // Hent nokkel fra URL query params
+  const hash = window.location.hash
+  const queryIndex = hash.indexOf('?')
+  if (queryIndex === -1) return false
+
+  const params = new URLSearchParams(hash.slice(queryIndex + 1))
+  const providedKey = params.get('key')
+
+  return providedKey === ADMIN_KEY
 }
 
 export default function App() {
@@ -46,8 +69,19 @@ export default function App() {
     hasActiveFilters
   })
 
-  // Admin-rute
+  // Admin-rute med tilgangskontroll
   if (route === '/admin') {
+    if (!checkAdminAccess()) {
+      return (
+        <main className={styles.main}>
+          <div className={styles.accessDenied}>
+            <h1>Ingen tilgang</h1>
+            <p>Admin krever gyldig nokkel.</p>
+            <a href="/">Tilbake til Sporjeger</a>
+          </div>
+        </main>
+      )
+    }
     return <AdminPanel />
   }
 

@@ -84,3 +84,26 @@
     padding: var(--space-md);
   }
 }
+
+/* Tilgang nektet */
+.accessDenied {
+  text-align: center;
+  font-family: var(--font-mono);
+}
+
+.accessDenied h1 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.accessDenied p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.accessDenied a {
+  color: var(--accent);
+}

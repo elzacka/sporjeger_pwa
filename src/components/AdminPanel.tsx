@@ -19,9 +19,44 @@ interface CategoryRow {
   description: string | null
 }
 
+interface QualityStats {
+  total_tools: number
+  active_tools: number
+  has_good_description: number
+  has_phases: number
+  verified_count: number
+  recently_verified: number
+  working_urls: number
+  broken_urls: number
+  description_pct: number
+  url_health_pct: number
+  avg_quality_score: number
+}
+
+interface QualityIssue {
+  id: string
+  name: string
+  url: string
+  issue: string
+  severity: string
+}
+
+interface AuditEntry {
+  id: string
+  table_name: string
+  record_id: string
+  action: string
+  changed_fields: string[]
+  user_email: string
+  created_at: string
+  new_data: { name?: string } | null
+}
+
+type ViewType = 'search' | 'quality' | 'audit'
 type TableType = 'tools' | 'categories'
 
 export function AdminPanel() {
+  const [view, setView] = useState<ViewType>('search')
   const [table, setTable] = useState<TableType>('tools')
   const [searchQuery, setSearchQuery] = useState('')
   const [results, setResults] = useState<(ToolRow | CategoryRow)[]>([])
@@ -29,6 +64,68 @@ export function AdminPanel() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editData, setEditData] = useState<Record<string, string | boolean | null>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+  // Kvalitetsdata
+  const [qualityStats, setQualityStats] = useState<QualityStats | null>(null)
+  const [qualityIssues, setQualityIssues] = useState<QualityIssue[]>([])
+  const [isLoadingQuality, setIsLoadingQuality] = useState(false)
+
+  // Audit log
+  const [auditLog, setAuditLog] = useState<AuditEntry[]>([])
+  const [isLoadingAudit, setIsLoadingAudit] = useState(false)
+
+  // Hent kvalitetsdata
+  const loadQualityData = async () => {
+    setIsLoadingQuality(true)
+    try {
+      // Hent statistikk
+      const { data: stats } = await supabase
+        .from('data_quality_stats')
+        .select('*')
+        .single()
+
+      if (stats) setQualityStats(stats)
+
+      // Hent problemer
+      const { data: issues } = await supabase
+        .from('data_quality_issues')
+        .select('*')
+        .limit(50)
+
+      if (issues) setQualityIssues(issues)
+    } catch (err) {
+      console.error('Feil ved lasting av kvalitetsdata:', err)
+    } finally {
+      setIsLoadingQuality(false)
+    }
+  }
+
+  // Hent audit log
+  const loadAuditLog = async () => {
+    setIsLoadingAudit(true)
+    try {
+      const { data } = await supabase
+        .from('audit_log')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
+
+      if (data) setAuditLog(data)
+    } catch (err) {
+      console.error('Feil ved lasting av audit log:', err)
+    } finally {
+      setIsLoadingAudit(false)
+    }
+  }
+
+  // Last data basert pa view
+  useEffect(() => {
+    if (view === 'quality') {
+      loadQualityData()
+    } else if (view === 'audit') {
+      loadAuditLog()
+    }
+  }, [view])
 
   // Sok i valgt tabell
   const handleSearch = async () => {
@@ -113,11 +210,12 @@ export function AdminPanel() {
         item.id === editingId ? { ...item, ...editData } as typeof item : item
       ))
 
-      // Lukk redigering etter kort pause
+      // Lukk redigering og kjor nytt sok for a vise oppdatert data
       setTimeout(() => {
         setEditingId(null)
         setEditData({})
         setSaveStatus('idle')
+        handleSearch()
       }, 1000)
     } catch (err) {
       console.error('Lagringsfeil:', err)
@@ -130,162 +228,319 @@ export function AdminPanel() {
     setEditData(prev => ({ ...prev, [field]: value }))
   }
 
+  // Tving refresh av hovedappen
+  const refreshMainApp = () => {
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        names.forEach(name => caches.delete(name))
+      })
+    }
+    window.location.href = '/'
+    window.location.reload()
+  }
+
+  // Formater dato
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr)
+    return date.toLocaleString('nb-NO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>Admin</h1>
-        <a href="/" className={styles.backLink}>Tilbake til Sporjeger</a>
+        <div className={styles.headerActions}>
+          <button
+            type="button"
+            className={styles.refreshButton}
+            onClick={refreshMainApp}
+            title="Oppdater hovedappen med nye data"
+          >
+            Oppdater app
+          </button>
+          <a href="/" className={styles.backLink}>Tilbake</a>
+        </div>
       </header>
 
-      <div className={styles.controls}>
-        <div className={styles.tableSelector}>
-          <button
-            type="button"
-            className={`${styles.tableButton} ${table === 'tools' ? styles.active : ''}`}
-            onClick={() => { setTable('tools'); setResults([]); setSearchQuery('') }}
-          >
-            Verktoy ({table === 'tools' ? results.length : '...'})
-          </button>
-          <button
-            type="button"
-            className={`${styles.tableButton} ${table === 'categories' ? styles.active : ''}`}
-            onClick={() => { setTable('categories'); setResults([]); setSearchQuery('') }}
-          >
-            Kategorier
-          </button>
-        </div>
+      {/* Navigasjon mellom views */}
+      <nav className={styles.nav}>
+        <button
+          type="button"
+          className={`${styles.navButton} ${view === 'search' ? styles.active : ''}`}
+          onClick={() => setView('search')}
+        >
+          Sok og rediger
+        </button>
+        <button
+          type="button"
+          className={`${styles.navButton} ${view === 'quality' ? styles.active : ''}`}
+          onClick={() => setView('quality')}
+        >
+          Datakvalitet
+        </button>
+        <button
+          type="button"
+          className={`${styles.navButton} ${view === 'audit' ? styles.active : ''}`}
+          onClick={() => setView('audit')}
+        >
+          Endringslogg
+        </button>
+      </nav>
 
-        <div className={styles.searchBox}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder={`Sok i ${table === 'tools' ? 'verktoy' : 'kategorier'}...`}
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-          />
-          {isSearching && <span className={styles.spinner}>...</span>}
-        </div>
-      </div>
+      {/* SOK OG REDIGER VIEW */}
+      {view === 'search' && (
+        <>
+          <div className={styles.controls}>
+            <div className={styles.tableSelector}>
+              <button
+                type="button"
+                className={`${styles.tableButton} ${table === 'tools' ? styles.active : ''}`}
+                onClick={() => { setTable('tools'); setResults([]); setSearchQuery('') }}
+              >
+                Verktoy ({table === 'tools' ? results.length : '...'})
+              </button>
+              <button
+                type="button"
+                className={`${styles.tableButton} ${table === 'categories' ? styles.active : ''}`}
+                onClick={() => { setTable('categories'); setResults([]); setSearchQuery('') }}
+              >
+                Kategorier
+              </button>
+            </div>
 
-      <div className={styles.results}>
-        {results.length === 0 && searchQuery && !isSearching && (
-          <p className={styles.noResults}>Ingen treff for "{searchQuery}"</p>
-        )}
-
-        {results.map(item => (
-          <div key={item.id} className={styles.resultItem}>
-            {editingId === item.id ? (
-              // Redigeringsmodus
-              <div className={styles.editForm}>
-                <div className={styles.editFields}>
-                  <label className={styles.editLabel}>
-                    Navn:
-                    <input
-                      type="text"
-                      className={styles.editInput}
-                      value={String(editData.name ?? '')}
-                      onChange={e => updateField('name', e.target.value)}
-                    />
-                  </label>
-
-                  {table === 'tools' && (
-                    <>
-                      <label className={styles.editLabel}>
-                        Beskrivelse:
-                        <textarea
-                          className={styles.editTextarea}
-                          value={String(editData.description ?? '')}
-                          onChange={e => updateField('description', e.target.value)}
-                          rows={3}
-                        />
-                      </label>
-                      <label className={styles.editLabel}>
-                        URL:
-                        <input
-                          type="text"
-                          className={styles.editInput}
-                          value={String(editData.url ?? '')}
-                          onChange={e => updateField('url', e.target.value)}
-                        />
-                      </label>
-                    </>
-                  )}
-
-                  {table === 'categories' && (
-                    <>
-                      <label className={styles.editLabel}>
-                        Slug:
-                        <input
-                          type="text"
-                          className={styles.editInput}
-                          value={String(editData.slug ?? '')}
-                          onChange={e => updateField('slug', e.target.value)}
-                        />
-                      </label>
-                      <label className={styles.editLabel}>
-                        Beskrivelse:
-                        <textarea
-                          className={styles.editTextarea}
-                          value={String(editData.description ?? '')}
-                          onChange={e => updateField('description', e.target.value)}
-                          rows={2}
-                        />
-                      </label>
-                    </>
-                  )}
-                </div>
-
-                <div className={styles.editActions}>
-                  <button
-                    type="button"
-                    className={styles.saveButton}
-                    onClick={saveChanges}
-                    disabled={saveStatus === 'saving'}
-                  >
-                    {saveStatus === 'saving' ? 'Lagrer...' : saveStatus === 'saved' ? 'Lagret!' : 'Lagre'}
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.cancelButton}
-                    onClick={cancelEditing}
-                  >
-                    Avbryt
-                  </button>
-                  {saveStatus === 'error' && (
-                    <span className={styles.errorText}>Feil ved lagring</span>
-                  )}
-                </div>
-              </div>
-            ) : (
-              // Visningsmodus
-              <div className={styles.itemContent}>
-                <div className={styles.itemMain}>
-                  <strong className={styles.itemName}>{item.name}</strong>
-                  {'description' in item && item.description && (
-                    <p className={styles.itemDescription}>{item.description}</p>
-                  )}
-                  {'url' in item && (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer" className={styles.itemUrl}>
-                      {item.url}
-                    </a>
-                  )}
-                  {'slug' in item && (
-                    <span className={styles.itemSlug}>slug: {item.slug}</span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  className={styles.editButton}
-                  onClick={() => startEditing(item)}
-                >
-                  Rediger
-                </button>
-              </div>
-            )}
+            <div className={styles.searchBox}>
+              <input
+                type="text"
+                className={styles.searchInput}
+                placeholder={`Sok i ${table === 'tools' ? 'verktoy' : 'kategorier'}...`}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
+              />
+              {isSearching && <span className={styles.spinner}>...</span>}
+            </div>
           </div>
-        ))}
-      </div>
+
+          <div className={styles.results}>
+            {results.length === 0 && searchQuery && !isSearching && (
+              <p className={styles.noResults}>Ingen treff for "{searchQuery}"</p>
+            )}
+
+            {results.map(item => (
+              <div key={item.id} className={styles.resultItem}>
+                {editingId === item.id ? (
+                  <div className={styles.editForm}>
+                    <div className={styles.editFields}>
+                      <label className={styles.editLabel}>
+                        Navn:
+                        <input
+                          type="text"
+                          className={styles.editInput}
+                          value={String(editData.name ?? '')}
+                          onChange={e => updateField('name', e.target.value)}
+                        />
+                      </label>
+
+                      {table === 'tools' && (
+                        <>
+                          <label className={styles.editLabel}>
+                            Beskrivelse:
+                            <textarea
+                              className={styles.editTextarea}
+                              value={String(editData.description ?? '')}
+                              onChange={e => updateField('description', e.target.value)}
+                              rows={3}
+                            />
+                          </label>
+                          <label className={styles.editLabel}>
+                            URL:
+                            <input
+                              type="text"
+                              className={styles.editInput}
+                              value={String(editData.url ?? '')}
+                              onChange={e => updateField('url', e.target.value)}
+                            />
+                          </label>
+                        </>
+                      )}
+
+                      {table === 'categories' && (
+                        <>
+                          <label className={styles.editLabel}>
+                            Slug:
+                            <input
+                              type="text"
+                              className={styles.editInput}
+                              value={String(editData.slug ?? '')}
+                              onChange={e => updateField('slug', e.target.value)}
+                            />
+                          </label>
+                          <label className={styles.editLabel}>
+                            Beskrivelse:
+                            <textarea
+                              className={styles.editTextarea}
+                              value={String(editData.description ?? '')}
+                              onChange={e => updateField('description', e.target.value)}
+                              rows={2}
+                            />
+                          </label>
+                        </>
+                      )}
+                    </div>
+
+                    <div className={styles.editActions}>
+                      <button
+                        type="button"
+                        className={styles.saveButton}
+                        onClick={saveChanges}
+                        disabled={saveStatus === 'saving'}
+                      >
+                        {saveStatus === 'saving' ? 'Lagrer...' : saveStatus === 'saved' ? 'Lagret!' : 'Lagre'}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.cancelButton}
+                        onClick={cancelEditing}
+                      >
+                        Avbryt
+                      </button>
+                      {saveStatus === 'error' && (
+                        <span className={styles.errorText}>Feil ved lagring</span>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className={styles.itemContent}>
+                    <div className={styles.itemMain}>
+                      <strong className={styles.itemName}>{item.name}</strong>
+                      {'description' in item && item.description && (
+                        <p className={styles.itemDescription}>{item.description}</p>
+                      )}
+                      {'url' in item && (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" className={styles.itemUrl}>
+                          {item.url}
+                        </a>
+                      )}
+                      {'slug' in item && (
+                        <span className={styles.itemSlug}>slug: {item.slug}</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      className={styles.editButton}
+                      onClick={() => startEditing(item)}
+                    >
+                      Rediger
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* DATAKVALITET VIEW */}
+      {view === 'quality' && (
+        <div className={styles.qualityView}>
+          {isLoadingQuality ? (
+            <p className={styles.loading}>Laster kvalitetsdata...</p>
+          ) : (
+            <>
+              {/* Statistikk-kort */}
+              {qualityStats && (
+                <div className={styles.statsGrid}>
+                  <div className={styles.statCard}>
+                    <span className={styles.statValue}>{qualityStats.total_tools}</span>
+                    <span className={styles.statLabel}>Totalt verktoy</span>
+                  </div>
+                  <div className={styles.statCard}>
+                    <span className={styles.statValue}>{qualityStats.active_tools}</span>
+                    <span className={styles.statLabel}>Aktive</span>
+                  </div>
+                  <div className={styles.statCard}>
+                    <span className={styles.statValue}>{qualityStats.description_pct ?? 0}%</span>
+                    <span className={styles.statLabel}>Har beskrivelse</span>
+                  </div>
+                  <div className={styles.statCard}>
+                    <span className={styles.statValue}>{qualityStats.has_phases}</span>
+                    <span className={styles.statLabel}>Har OSINT-faser</span>
+                  </div>
+                  <div className={styles.statCard}>
+                    <span className={styles.statValue}>{qualityStats.working_urls}</span>
+                    <span className={styles.statLabel}>Fungerende URLer</span>
+                  </div>
+                  <div className={styles.statCard}>
+                    <span className={styles.statValue}>{qualityStats.broken_urls}</span>
+                    <span className={styles.statLabel}>Dode lenker</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Kvalitetsproblemer */}
+              <h2 className={styles.sectionTitle}>Kvalitetsproblemer ({qualityIssues.length})</h2>
+              {qualityIssues.length === 0 ? (
+                <p className={styles.noIssues}>Ingen kvalitetsproblemer funnet. Kjor database-improvements.sql for a aktivere views.</p>
+              ) : (
+                <div className={styles.issuesList}>
+                  {qualityIssues.map(issue => (
+                    <div key={issue.id} className={`${styles.issueItem} ${styles[issue.severity]}`}>
+                      <div className={styles.issueMain}>
+                        <strong>{issue.name}</strong>
+                        <span className={styles.issueBadge}>{issue.issue}</span>
+                      </div>
+                      <a href={issue.url} target="_blank" rel="noopener noreferrer" className={styles.issueUrl}>
+                        {issue.url}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* ENDRINGSLOGG VIEW */}
+      {view === 'audit' && (
+        <div className={styles.auditView}>
+          {isLoadingAudit ? (
+            <p className={styles.loading}>Laster endringslogg...</p>
+          ) : auditLog.length === 0 ? (
+            <p className={styles.noResults}>Ingen endringer logget enna. Kjor database-improvements.sql for a aktivere logging.</p>
+          ) : (
+            <div className={styles.auditList}>
+              {auditLog.map(entry => (
+                <div key={entry.id} className={styles.auditItem}>
+                  <div className={styles.auditHeader}>
+                    <span className={`${styles.auditAction} ${styles[entry.action.toLowerCase()]}`}>
+                      {entry.action}
+                    </span>
+                    <span className={styles.auditTable}>{entry.table_name}</span>
+                    <span className={styles.auditTime}>{formatDate(entry.created_at)}</span>
+                  </div>
+                  <div className={styles.auditDetails}>
+                    <span className={styles.auditName}>
+                      {entry.new_data?.name ?? entry.record_id.slice(0, 8)}
+                    </span>
+                    {entry.changed_fields && entry.changed_fields.length > 0 && (
+                      <span className={styles.auditFields}>
+                        Endret: {entry.changed_fields.join(', ')}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
