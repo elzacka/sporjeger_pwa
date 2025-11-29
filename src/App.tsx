@@ -34,15 +34,8 @@ function useHashRoute() {
 
 export default function App() {
   const route = useHashRoute()
-  const { tools, categories, isLoading, error, isOffline, hardRefresh } = useTools()
+  const { tools, categories, isLoading, error, isOffline } = useTools()
   const { isAuthenticated, isLoading: authLoading, signOut } = useAuth()
-  const [isRefreshing, setIsRefreshing] = useState(false)
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true)
-    await hardRefresh()
-    setIsRefreshing(false)
-  }
 
   const {
     query,
@@ -131,14 +124,6 @@ export default function App() {
 
       <footer className={styles.footer}>
         <span>{t.ui.footer}</span>
-        <button
-          className={styles.refreshButton}
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-          title={t.ui.refreshTitle}
-        >
-          {isRefreshing ? t.ui.refreshing : t.ui.refresh}
-        </button>
         <HelpGuide />
       </footer>
     </div>
