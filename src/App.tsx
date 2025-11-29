@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { CommandSearch } from '@/components/CommandSearch'
 import { ToolList } from '@/components/ToolList'
 import { HelpGuide } from '@/components/HelpGuide'
+import { DorksGuide } from '@/components/DorksGuide'
 import { AdminLogin } from '@/components/AdminLogin'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
@@ -124,6 +125,7 @@ export default function App() {
 
       <footer className={styles.footer}>
         <span>{t.ui.footer}</span>
+        <DorksGuide />
         <HelpGuide />
       </footer>
     </div>
