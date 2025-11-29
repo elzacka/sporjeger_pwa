@@ -63,21 +63,21 @@ export const t = {
 
   // UI-tekster
   ui: {
-    search: 'Sok',
+    search: 'Søk',
     searchPlaceholder: '',
-    noResults: 'Ingen verktoy funnet',
-    noResultsHint: 'Prov andre sokeord eller fjern noen filtre',
+    noResults: 'Ingen verktøy funnet',
+    noResultsHint: 'Prøv andre søkeord eller fjern noen filtre',
     clear: 'Nullstill',
     showMore: 'Vis flere',
-    showLess: 'Vis farre',
-    tools: 'verktoy',
-    tool: 'verktoy',
+    showLess: 'Vis færre',
+    tools: 'verktøy',
+    tool: 'verktøy',
     footer: 'Sporjeger - OSINT-katalog for digital skattejakt',
     loading: 'Laster...',
     offline: 'Du er frakoblet. Viser bufret data.',
     refreshing: 'Oppdaterer...',
     refresh: 'Oppdater',
-    refreshTitle: 'Tom cache og hent oppdatert data fra Supabase',
+    refreshTitle: 'Tøm cache og hent oppdatert data fra Supabase',
 
     // Filter-grupper
     filterByCategory: 'Kategori',
@@ -85,7 +85,7 @@ export const t = {
     filterByPrice: 'Pris',
     filterByPhase: 'Fase',
 
-    // Hints for sok
+    // Hints for søk
     hints: [
       'brukernavn',
       'verifisere bilde',

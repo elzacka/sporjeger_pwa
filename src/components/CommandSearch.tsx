@@ -26,13 +26,13 @@ interface CommandSearchProps {
 // Placeholder-tekster som roterer
 const placeholderTexts = [
   'Let i arkiver...',
-  'Finn sarbarheter...',
-  'Spor fartoy...',
-  'Sok i sosiale medier...',
+  'Finn sårbarheter...',
+  'Spor fartøy...',
+  'Søk i sosiale medier...',
   'Finn folk...',
   'Analyser store datamengder...',
-  'Finn monstre...',
-  'Bruk verktoy for geolokalisering...',
+  'Finn mønstre...',
+  'Bruk verktøy for geolokalisering...',
   'Analyser nettsider...',
 ]
 
