@@ -171,8 +171,8 @@ export function CommandSearch({
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // "/" fokuserer søkefeltet
-      if (e.key === '/' && document.activeElement !== inputRef.current) {
+      // Ctrl+K eller Cmd+K fokuserer søkefeltet
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k' && document.activeElement !== inputRef.current) {
         e.preventDefault()
         inputRef.current?.focus()
         setIsExpanded(true)
@@ -301,7 +301,7 @@ export function CommandSearch({
         )}
 
         {!hasContent && (
-          <kbd className={styles.hint} aria-hidden="true">/</kbd>
+          <kbd className={styles.hint} aria-hidden="true">Ctrl K</kbd>
         )}
       </div>
 

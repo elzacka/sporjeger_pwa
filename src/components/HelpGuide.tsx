@@ -60,7 +60,7 @@ export function HelpGuide() {
               <section className={styles.section}>
                 <h3>Slik søker du</h3>
                 <ul>
-                  <li>Trykk <kbd>/</kbd> eller klikk i søkefelt for å starte søk</li>
+                  <li>Trykk <kbd>Ctrl</kbd>+<kbd>K</kbd> eller klikk i søkefelt for å starte søk</li>
                   <li>Klikk på en kategori-knapp for å filtrere</li>
                   <li>Kombiner søk og filtre for finne akkurat det verktøyet du trenger</li>
                   <li>Trykk <kbd>Esc</kbd> for å nullstille</li>
