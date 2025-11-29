@@ -25,26 +25,46 @@ function parsePostgresArray(value: string | string[] | null): string[] {
 }
 
 // Hent alle aktive verktøy med kategorier
+// Supabase har en standard grense på 1000 rader, så vi henter i batcher
 export async function getTools(): Promise<ToolWithCategories[]> {
-  const { data, error } = await supabase
-    .from('tools_with_categories')
-    .select('*')
-    .eq('is_active', true)
-    .order('name')
+  const allTools: ToolWithCategories[] = []
+  const batchSize = 1000
+  let offset = 0
+  let hasMore = true
 
-  if (error) {
-    console.error('Feil ved henting av verktøy:', error)
-    return []
+  while (hasMore) {
+    const { data, error } = await supabase
+      .from('tools_with_categories')
+      .select('*')
+      .eq('is_active', true)
+      .order('name')
+      .range(offset, offset + batchSize - 1)
+
+    if (error) {
+      console.error('Feil ved henting av verktøy:', error)
+      break
+    }
+
+    if (data && data.length > 0) {
+      // Transformer og legg til
+      const transformed = data.map(tool => ({
+        ...tool,
+        categories: tool.category_slugs ?? [],
+        intel_cycle_phases: parsePostgresArray(tool.intel_cycle_phases)
+      }))
+      allTools.push(...transformed)
+      offset += batchSize
+
+      // Hvis vi fikk færre enn batchSize, er vi ferdige
+      if (data.length < batchSize) {
+        hasMore = false
+      }
+    } else {
+      hasMore = false
+    }
   }
 
-  // Transformer data for å matche forventet struktur
-  return (data ?? []).map(tool => ({
-    ...tool,
-    // Map category_slugs til categories for kompatibilitet
-    categories: tool.category_slugs ?? [],
-    // Parse intel_cycle_phases hvis det er en streng
-    intel_cycle_phases: parsePostgresArray(tool.intel_cycle_phases)
-  }))
+  return allTools
 }
 
 // Hent alle kategorier med antall verktøy

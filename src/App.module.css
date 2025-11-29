@@ -68,6 +68,28 @@
   color: var(--text-muted);
 }
 
+.refreshButton {
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  color: var(--text-secondary);
+  border-color: var(--text-muted);
+}
+
+.refreshButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Responsiv */
 @media (max-width: 600px) {
   .main {

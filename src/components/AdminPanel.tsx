@@ -1,15 +1,58 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import type { ToolType, PricingModel, Platform, IntelCyclePhase } from '@/types/database'
 import styles from './AdminPanel.module.css'
+
+// Dropdown-valg
+const TOOL_TYPES: { value: ToolType; label: string }[] = [
+  { value: 'web', label: 'Web' },
+  { value: 'terminal', label: 'Terminal' },
+  { value: 'desktop', label: 'Desktop' },
+  { value: 'mobile', label: 'Mobile' },
+  { value: 'browser_extension', label: 'Nettleserutvidelse' },
+  { value: 'api', label: 'API' },
+  { value: 'dork', label: 'Dork' },
+  { value: 'database', label: 'Database' },
+]
+
+const PRICING_MODELS: { value: PricingModel; label: string }[] = [
+  { value: 'free', label: 'Gratis' },
+  { value: 'freemium', label: 'Gratish' },
+  { value: 'paid', label: 'Betalt' },
+]
+
+const PLATFORMS: { value: Platform; label: string }[] = [
+  { value: 'web', label: 'Web' },
+  { value: 'windows', label: 'Windows' },
+  { value: 'macos', label: 'macOS' },
+  { value: 'linux', label: 'Linux' },
+  { value: 'android', label: 'Android' },
+  { value: 'ios', label: 'iOS' },
+]
+
+const INTEL_PHASES: { value: IntelCyclePhase; label: string }[] = [
+  { value: 'planning', label: 'Planlegging' },
+  { value: 'collection', label: 'Innsamling' },
+  { value: 'processing', label: 'Prosessering' },
+  { value: 'analysis', label: 'Analyse' },
+  { value: 'dissemination', label: 'Distribusjon' },
+]
 
 interface ToolRow {
   id: string
   name: string
+  slug: string
   description: string | null
   url: string
-  tool_type: string
-  pricing_model: string
+  tool_type: ToolType
+  requires_registration: boolean
+  requires_manual_url: boolean
+  pricing_model: PricingModel
+  platforms: Platform[]
+  intel_cycle_phases: IntelCyclePhase[]
+  regions: string[]
   is_active: boolean
+  last_verified: string | null
 }
 
 interface CategoryRow {
@@ -62,7 +105,7 @@ export function AdminPanel() {
   const [results, setResults] = useState<(ToolRow | CategoryRow)[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editData, setEditData] = useState<Record<string, string | boolean | null>>({})
+  const [editData, setEditData] = useState<Record<string, string | boolean | string[] | null>>({})
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
   // Kvalitetsdata
@@ -140,7 +183,7 @@ export function AdminPanel() {
       if (table === 'tools') {
         const { data, error } = await supabase
           .from('tools')
-          .select('id, name, description, url, tool_type, pricing_model, is_active')
+          .select('id, name, slug, description, url, tool_type, requires_registration, requires_manual_url, pricing_model, platforms, intel_cycle_phases, regions, is_active, last_verified')
           .or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
           .order('name')
           .limit(50)
@@ -196,10 +239,18 @@ export function AdminPanel() {
     setSaveStatus('saving')
 
     try {
-      const { error } = await supabase
+      // Fjern id fra data som skal oppdateres
+      const { id, ...dataToUpdate } = editData
+
+      console.log('Lagrer til', table, 'med id', editingId, ':', dataToUpdate)
+
+      const { data, error } = await supabase
         .from(table)
-        .update(editData)
+        .update(dataToUpdate)
         .eq('id', editingId)
+        .select()
+
+      console.log('Supabase respons:', { data, error })
 
       if (error) throw error
 
@@ -224,8 +275,17 @@ export function AdminPanel() {
   }
 
   // Oppdater felt i editData
-  const updateField = (field: string, value: string | boolean) => {
+  const updateField = (field: string, value: string | boolean | string[] | null) => {
     setEditData(prev => ({ ...prev, [field]: value }))
+  }
+
+  // Toggle verdi i array-felt
+  const toggleArrayValue = (field: string, value: string) => {
+    const current = (editData[field] as string[]) || []
+    const newValue = current.includes(value)
+      ? current.filter(v => v !== value)
+      : [...current, value]
+    updateField(field, newValue)
   }
 
   // Tving refresh av hovedappen
@@ -350,6 +410,16 @@ export function AdminPanel() {
                       {table === 'tools' && (
                         <>
                           <label className={styles.editLabel}>
+                            Slug:
+                            <input
+                              type="text"
+                              className={styles.editInput}
+                              value={String(editData.slug ?? '')}
+                              onChange={e => updateField('slug', e.target.value)}
+                            />
+                          </label>
+
+                          <label className={styles.editLabel}>
                             Beskrivelse:
                             <textarea
                               className={styles.editTextarea}
@@ -358,6 +428,7 @@ export function AdminPanel() {
                               rows={3}
                             />
                           </label>
+
                           <label className={styles.editLabel}>
                             URL:
                             <input
@@ -365,6 +436,114 @@ export function AdminPanel() {
                               className={styles.editInput}
                               value={String(editData.url ?? '')}
                               onChange={e => updateField('url', e.target.value)}
+                            />
+                          </label>
+
+                          <div className={styles.editRow}>
+                            <label className={styles.editLabel}>
+                              Type:
+                              <select
+                                className={styles.editSelect}
+                                value={String(editData.tool_type ?? 'web')}
+                                onChange={e => updateField('tool_type', e.target.value)}
+                              >
+                                {TOOL_TYPES.map(t => (
+                                  <option key={t.value} value={t.value}>{t.label}</option>
+                                ))}
+                              </select>
+                            </label>
+
+                            <label className={styles.editLabel}>
+                              Prismodell:
+                              <select
+                                className={styles.editSelect}
+                                value={String(editData.pricing_model ?? 'free')}
+                                onChange={e => updateField('pricing_model', e.target.value)}
+                              >
+                                {PRICING_MODELS.map(p => (
+                                  <option key={p.value} value={p.value}>{p.label}</option>
+                                ))}
+                              </select>
+                            </label>
+                          </div>
+
+                          <div className={styles.checkboxGroup}>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(editData.is_active)}
+                                onChange={e => updateField('is_active', e.target.checked)}
+                              />
+                              Aktiv
+                            </label>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(editData.requires_registration)}
+                                onChange={e => updateField('requires_registration', e.target.checked)}
+                              />
+                              Krever registrering
+                            </label>
+                            <label className={styles.checkboxLabel}>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(editData.requires_manual_url)}
+                                onChange={e => updateField('requires_manual_url', e.target.checked)}
+                              />
+                              Krever manuell URL
+                            </label>
+                          </div>
+
+                          <fieldset className={styles.fieldset}>
+                            <legend>Plattformer</legend>
+                            <div className={styles.checkboxGrid}>
+                              {PLATFORMS.map(p => (
+                                <label key={p.value} className={styles.checkboxLabel}>
+                                  <input
+                                    type="checkbox"
+                                    checked={((editData.platforms as string[]) || []).includes(p.value)}
+                                    onChange={() => toggleArrayValue('platforms', p.value)}
+                                  />
+                                  {p.label}
+                                </label>
+                              ))}
+                            </div>
+                          </fieldset>
+
+                          <fieldset className={styles.fieldset}>
+                            <legend>OSINT-faser</legend>
+                            <div className={styles.checkboxGrid}>
+                              {INTEL_PHASES.map(p => (
+                                <label key={p.value} className={styles.checkboxLabel}>
+                                  <input
+                                    type="checkbox"
+                                    checked={((editData.intel_cycle_phases as string[]) || []).includes(p.value)}
+                                    onChange={() => toggleArrayValue('intel_cycle_phases', p.value)}
+                                  />
+                                  {p.label}
+                                </label>
+                              ))}
+                            </div>
+                          </fieldset>
+
+                          <label className={styles.editLabel}>
+                            Regioner (kommaseparert):
+                            <input
+                              type="text"
+                              className={styles.editInput}
+                              value={((editData.regions as string[]) || []).join(', ')}
+                              onChange={e => updateField('regions', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                              placeholder="f.eks. global, europe, norway"
+                            />
+                          </label>
+
+                          <label className={styles.editLabel}>
+                            Sist verifisert:
+                            <input
+                              type="date"
+                              className={styles.editInput}
+                              value={editData.last_verified ? String(editData.last_verified).split('T')[0] : ''}
+                              onChange={e => updateField('last_verified', e.target.value || null)}
                             />
                           </label>
                         </>

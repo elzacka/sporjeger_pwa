@@ -49,7 +49,14 @@ function checkAdminAccess(): boolean {
 
 export default function App() {
   const route = useHashRoute()
-  const { tools, categories, isLoading, error, isOffline } = useTools()
+  const { tools, categories, isLoading, error, isOffline, hardRefresh } = useTools()
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await hardRefresh()
+    setIsRefreshing(false)
+  }
 
   const {
     query,
@@ -130,6 +137,14 @@ export default function App() {
 
       <footer className={styles.footer}>
         <span>{t.ui.footer}</span>
+        <button
+          className={styles.refreshButton}
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          title="Tøm cache og hent oppdatert data fra Supabase"
+        >
+          {isRefreshing ? 'Oppdaterer...' : 'Oppdater'}
+        </button>
         <HelpGuide />
       </footer>
     </div>

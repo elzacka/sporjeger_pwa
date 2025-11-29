@@ -38,6 +38,16 @@ function setCache<T>(key: string, data: T): void {
   }
 }
 
+// Tøm cache - eksporteres for bruk i andre komponenter
+export function clearToolsCache(): void {
+  try {
+    localStorage.removeItem(CACHE_KEY_TOOLS)
+    localStorage.removeItem(CACHE_KEY_CATEGORIES)
+  } catch {
+    // Ignorer feil
+  }
+}
+
 export function useTools() {
   const [tools, setTools] = useState<ToolWithCategories[]>([])
   const [categories, setCategories] = useState<CategoryWithCount[]>([])
@@ -112,12 +122,19 @@ export function useTools() {
     loadData()
   }, [loadData])
 
+  // Tøm cache og last på nytt
+  const hardRefresh = useCallback(async () => {
+    clearToolsCache()
+    await loadData()
+  }, [loadData])
+
   return {
     tools,
     categories,
     isLoading,
     error,
     isOffline,
-    refresh: loadData
+    refresh: loadData,
+    hardRefresh
   }
 }

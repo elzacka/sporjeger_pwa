@@ -85,12 +85,27 @@ export function HelpGuide() {
               </section>
 
               <section className={styles.section}>
-                <h3>Tips</h3>
+                <h3>Kjekt å vite</h3>
                 <ul>
                   <li>Appen fungerer offline etter første besøk</li>
                   <li>Søk fungerer på norsk og engelsk</li>
                   <li>Klikk på et verktøy-navn for å åpne det</li>
                 </ul>
+              </section>
+
+              <section className={styles.section}>
+                <h3>Installer appen</h3>
+                <p>Sporjeger kan installeres som app på enheten din:</p>
+                <dl className={styles.installList}>
+                  <dt>iPhone/iPad</dt>
+                  <dd>Trykk Del-knappen, deretter «Legg til på Hjem-skjerm»</dd>
+
+                  <dt>Android</dt>
+                  <dd>Trykk menyknappen, deretter «Installer app» eller «Legg til på startskjermen»</dd>
+
+                  <dt>Desktop</dt>
+                  <dd>Klikk installasjons-ikonet i adressefeltet (Chrome/Edge)</dd>
+                </dl>
               </section>
             </div>
           </dialog>

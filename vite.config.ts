@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg'],
+      includeAssets: ['favicon.svg', 'icon-192.svg', 'icon-512.svg', 'icon-maskable.svg'],
       manifest: {
         name: 'Sporjeger',
         short_name: 'Sporjeger',
@@ -16,12 +16,33 @@ export default defineConfig({
         theme_color: '#F4F1EA',
         background_color: '#F4F1EA',
         display: 'standalone',
+        start_url: '/sporjeger_pwa/',
+        scope: '/sporjeger_pwa/',
+        categories: ['utilities', 'productivity'],
         icons: [
           {
             src: 'favicon.svg',
             sizes: 'any',
             type: 'image/svg+xml',
-            purpose: 'any maskable'
+            purpose: 'any'
+          },
+          {
+            src: 'icon-192.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+            purpose: 'any'
+          },
+          {
+            src: 'icon-512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any'
+          },
+          {
+            src: 'icon-maskable.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'maskable'
           }
         ]
       },
@@ -47,5 +68,12 @@ export default defineConfig({
     alias: {
       '@': '/src'
     }
+  },
+  server: {
+    port: 5174,
+    strictPort: true
+  },
+  preview: {
+    port: 5174
   }
 })

@@ -43,6 +43,8 @@ export interface Tool {
   regions: string[]
   is_active: boolean
   last_verified: string | null
+  verified_by: string | null
+  quality_score: number | null
   updated_at: string
 }
 

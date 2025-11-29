@@ -312,6 +312,78 @@
   color: var(--badge-registration);
 }
 
+/* Select dropdown */
+.editSelect {
+  padding: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.editSelect:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Rad med flere felter */
+.editRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+/* Checkbox-gruppe */
+.checkboxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Fieldset for grupperte valg */
+.fieldset {
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-light);
+  border-radius: 3px;
+}
+
+.fieldset legend {
+  padding: 0 var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.checkboxGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm) var(--space-md);
+}
+
 /* Navigasjon */
 .nav {
   display: flex;
@@ -585,5 +657,14 @@
   .auditTime {
     margin-left: 0;
     width: 100%;
+  }
+
+  .editRow {
+    grid-template-columns: 1fr;
+  }
+
+  .checkboxGroup {
+    flex-direction: column;
+    gap: var(--space-sm);
   }
 }
