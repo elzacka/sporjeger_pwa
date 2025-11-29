@@ -44,6 +44,22 @@
   background: var(--accent-hover);
 }
 
+.signOutButton {
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.signOutButton:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
 .backLink {
   font-family: var(--font-mono);
   font-size: 0.8125rem;

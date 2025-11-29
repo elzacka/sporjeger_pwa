@@ -70,7 +70,11 @@ const MAX_DESCRIPTION_LENGTH = 2000
 const MAX_URL_LENGTH = 500
 const MAX_SLUG_LENGTH = 100
 
-export function AdminPanel() {
+interface AdminPanelProps {
+  onSignOut?: () => Promise<{ error: Error | null }>
+}
+
+export function AdminPanel({ onSignOut }: AdminPanelProps) {
   const [view, setView] = useState<ViewType>('search')
   const [table, setTable] = useState<TableType>('tools')
   const [searchQuery, setSearchQuery] = useState('')
@@ -294,6 +298,13 @@ export function AdminPanel() {
     })
   }
 
+  const handleSignOut = async () => {
+    if (onSignOut) {
+      await onSignOut()
+      window.location.href = '/'
+    }
+  }
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -307,6 +318,15 @@ export function AdminPanel() {
           >
             Oppdater app
           </button>
+          {onSignOut && (
+            <button
+              type="button"
+              className={styles.signOutButton}
+              onClick={handleSignOut}
+            >
+              Logg ut
+            </button>
+          )}
           <a href="/" className={styles.backLink}>Tilbake</a>
         </div>
       </header>

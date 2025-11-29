@@ -2,23 +2,22 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { useTools } from '@/hooks/useTools'
 import { useFilters } from '@/hooks/useFilters'
 import { useSearch } from '@/hooks/useSearch'
+import { useAuth } from '@/hooks/useAuth'
 import { CommandSearch } from '@/components/CommandSearch'
 import { ToolList } from '@/components/ToolList'
 import { HelpGuide } from '@/components/HelpGuide'
+import { AdminLogin } from '@/components/AdminLogin'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
 
 // Lazy load AdminPanel - lastes kun nar admin-rute besokes
 const AdminPanel = lazy(() => import('@/components/AdminPanel').then(m => ({ default: m.AdminPanel })))
 
-// Admin-nokkel fra miljovariabel (sett i .env)
-const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || ''
-
-// Enkel hash-basert ruting med query params
+// Enkel hash-basert ruting
 function useHashRoute() {
   const [route, setRoute] = useState(() => {
     const hash = window.location.hash.slice(1) || '/'
-    return hash.split('?')[0] // Fjern query params fra rute
+    return hash.split('?')[0]
   })
 
   useEffect(() => {
@@ -33,28 +32,10 @@ function useHashRoute() {
   return route
 }
 
-// Sjekk om admin-nokkel er gyldig
-function checkAdminAccess(): boolean {
-  // Krev alltid nokkel - ingen fallback til apen tilgang
-  if (!ADMIN_KEY) {
-    console.warn('VITE_ADMIN_KEY er ikke satt. Admin-tilgang er deaktivert.')
-    return false
-  }
-
-  // Hent nokkel fra URL query params
-  const hash = window.location.hash
-  const queryIndex = hash.indexOf('?')
-  if (queryIndex === -1) return false
-
-  const params = new URLSearchParams(hash.slice(queryIndex + 1))
-  const providedKey = params.get('key')
-
-  return providedKey === ADMIN_KEY
-}
-
 export default function App() {
   const route = useHashRoute()
   const { tools, categories, isLoading, error, isOffline, hardRefresh } = useTools()
+  const { isAuthenticated, isLoading: authLoading, signOut } = useAuth()
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const handleRefresh = async () => {
@@ -81,22 +62,26 @@ export default function App() {
     hasActiveFilters
   })
 
-  // Admin-rute med tilgangskontroll
+  // Admin-rute med Supabase Auth
   if (route === '/admin') {
-    if (!checkAdminAccess()) {
+    // Venter pa auth-sjekk
+    if (authLoading) {
       return (
         <main className={styles.main}>
-          <div className={styles.accessDenied}>
-            <h1>Ingen tilgang</h1>
-            <p>Admin krever gyldig nokkel.</p>
-            <a href="/">Tilbake til Sporjeger</a>
-          </div>
+          <div className={styles.loading}>Sjekker tilgang...</div>
         </main>
       )
     }
+
+    // Ikke innlogget - vis innloggingsside
+    if (!isAuthenticated) {
+      return <AdminLogin onBack={() => window.location.href = '/'} />
+    }
+
+    // Innlogget - vis admin-panel
     return (
       <Suspense fallback={<div className={styles.loading}>Laster admin...</div>}>
-        <AdminPanel />
+        <AdminPanel onSignOut={signOut} />
       </Suspense>
     )
   }
