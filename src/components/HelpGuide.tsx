@@ -49,12 +49,9 @@ export function HelpGuide() {
             </header>
 
             <div className={styles.content}>
-              <section className={styles.section}>
-                <h3>Hva er Sporjeger?</h3>
-                <p>
-                  Sporjeger er en katalog med over 1000 OSINT-verktøy (Open Source Intelligence). For det du ønsker å finne eller finne ut av blant åpne kilder på nett.
-                </p>
-              </section>
+              <p className={styles.ingress}>
+                Katalog med over 1000 OSINT-verktøy for research i åpne kilder.
+              </p>
 
               <section className={styles.section}>
                 <h3>Slik søker du</h3>

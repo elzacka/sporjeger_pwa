@@ -91,6 +91,13 @@
   text-align: left;
 }
 
+.ingress {
+  margin: 0 0 var(--space-lg);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
 .section {
   margin-bottom: var(--space-lg);
 }
