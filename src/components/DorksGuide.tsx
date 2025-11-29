@@ -62,67 +62,67 @@ export function DorksGuide() {
                 <dl className={styles.dorkList}>
                   <dt><code>site:</code></dt>
                   <dd>Søk kun på ett nettsted</dd>
-                  <dd className={styles.example}>site:regjeringen.no statsbudsjett</dd>
+                  <dd className={styles.example}>site:vg.no fotball</dd>
 
                   <dt><code>filetype:</code></dt>
                   <dd>Finn spesifikke filtyper</dd>
-                  <dd className={styles.example}>filetype:pdf årsrapport 2024</dd>
+                  <dd className={styles.example}>filetype:pdf oppskrift</dd>
 
                   <dt><code>intitle:</code></dt>
                   <dd>Ord må være i sidetittelen</dd>
-                  <dd className={styles.example}>intitle:index.of passwords</dd>
+                  <dd className={styles.example}>intitle:guide fjelltur</dd>
 
                   <dt><code>inurl:</code></dt>
                   <dd>Ord må være i URL-en</dd>
-                  <dd className={styles.example}>inurl:admin login</dd>
+                  <dd className={styles.example}>inurl:blog reise norge</dd>
 
                   <dt><code>"..."</code></dt>
                   <dd>Eksakt frase</dd>
-                  <dd className={styles.example}>"konfidensielt" filetype:pdf</dd>
+                  <dd className={styles.example}>"beste kaffebrenneri oslo"</dd>
 
                   <dt><code>-</code></dt>
                   <dd>Ekskluder ord</dd>
-                  <dd className={styles.example}>apple -fruit -iphone</dd>
+                  <dd className={styles.example}>jaguar -bil -car</dd>
                 </dl>
               </section>
 
               <section className={styles.section}>
                 <h3>Nyttige kombinasjoner</h3>
                 <dl className={styles.dorkList}>
-                  <dt>Finn eksponerte dokumenter</dt>
-                  <dd className={styles.example}>site:*.no filetype:xlsx budget</dd>
+                  <dt>Søk i flere nettaviser</dt>
+                  <dd className={styles.example}>site:vg.no OR site:nrk.no OR site:dagbladet.no tema</dd>
 
-                  <dt>Finn innloggingssider</dt>
-                  <dd className={styles.example}>site:example.com inurl:login OR inurl:admin</dd>
+                  <dt>Finn presentasjoner</dt>
+                  <dd className={styles.example}>filetype:pptx OR filetype:pdf "presentasjon"</dd>
 
-                  <dt>Finn e-postadresser</dt>
-                  <dd className={styles.example}>site:linkedin.com "@bedrift.no"</dd>
+                  <dt>Finn kontaktinfo</dt>
+                  <dd className={styles.example}>site:linkedin.com "jobbtittel" "oslo"</dd>
 
-                  <dt>Finn CV-er</dt>
-                  <dd className={styles.example}>filetype:pdf CV site:*.no</dd>
+                  <dt>Finn diskusjoner</dt>
+                  <dd className={styles.example}>site:reddit.com OR site:quora.com søkeord</dd>
 
-                  <dt>Finn offentlige mapper</dt>
-                  <dd className={styles.example}>intitle:"index of" site:*.no</dd>
+                  <dt>Søk i fora</dt>
+                  <dd className={styles.example}>inurl:forum OR inurl:thread søkeord</dd>
 
-                  <dt>Finn webcams</dt>
-                  <dd className={styles.example}>inurl:view/view.shtml</dd>
+                  <dt>Finn bilder med info</dt>
+                  <dd className={styles.example}>intitle:"index of" dcim</dd>
                 </dl>
               </section>
 
               <section className={styles.section}>
-                <h3>Norske kilder</h3>
+                <h3>Research-eksempler</h3>
                 <dl className={styles.dorkList}>
-                  <dt>Offentlige dokumenter</dt>
-                  <dd className={styles.example}>site:regjeringen.no OR site:stortinget.no filetype:pdf</dd>
+                  <dt>Finn selskapsinfo</dt>
+                  <dd className={styles.example}>site:proff.no "firmanavn"</dd>
 
-                  <dt>Kommunale saker</dt>
-                  <dd className={styles.example}>site:*.kommune.no filetype:pdf saksfremlegg</dd>
+                  <dt>Finn nyhetsarkiv</dt>
+                  <dd className={styles.example}>site:nrk.no "2020..2024" søkeord</dd>
 
-                  <dt>Foretaksinfo</dt>
-                  <dd className={styles.example}>site:proff.no "daglig leder"</dd>
+                  <dt>Finn akademiske kilder</dt>
+                  <dd className={styles.example}>site:uio.no OR site:ntnu.no filetype:pdf</dd>
 
-                  <dt>Domstolsavgjørelser</dt>
-                  <dd className={styles.example}>site:lovdata.no dom 2024</dd>
+                  <dt>Finn sosiale profiler</dt>
+                  <dd className={styles.example}>site:twitter.com OR site:instagram.com "brukernavn"</dd>
                 </dl>
               </section>
 
