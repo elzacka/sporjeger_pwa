@@ -202,4 +202,16 @@
   .content {
     max-height: calc(90vh - 60px);
   }
+
+  /* Sikre at hjelp-knappen er synlig og trykkbar på mobil */
+  .helpButton {
+    padding: 8px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+
+  .helpButton svg {
+    width: 18px;
+    height: 18px;
+  }
 }

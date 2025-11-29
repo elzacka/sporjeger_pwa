@@ -1,13 +1,31 @@
+import { useState, useEffect } from 'react'
 import { useTools } from '@/hooks/useTools'
 import { useFilters } from '@/hooks/useFilters'
 import { useSearch } from '@/hooks/useSearch'
 import { CommandSearch } from '@/components/CommandSearch'
 import { ToolList } from '@/components/ToolList'
 import { HelpGuide } from '@/components/HelpGuide'
+import { AdminPanel } from '@/components/AdminPanel'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
 
+// Enkel hash-basert ruting
+function useHashRoute() {
+  const [route, setRoute] = useState(window.location.hash.slice(1) || '/')
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setRoute(window.location.hash.slice(1) || '/')
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
+
+  return route
+}
+
 export default function App() {
+  const route = useHashRoute()
   const { tools, categories, isLoading, error, isOffline } = useTools()
 
   const {
@@ -27,6 +45,11 @@ export default function App() {
     filters: parsedFilters,
     hasActiveFilters
   })
+
+  // Admin-rute
+  if (route === '/admin') {
+    return <AdminPanel />
+  }
 
   // Loading state
   if (isLoading) {

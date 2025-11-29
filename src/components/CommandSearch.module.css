@@ -301,6 +301,8 @@
 
   .input {
     font-size: 1rem;
+    /* Sørg for at placeholder vises riktig på mobil */
+    min-width: 100px;
   }
 
   .filterTag {
@@ -310,6 +312,30 @@
   .filterButton {
     font-size: 0.75rem;
     padding: var(--space-xs) var(--space-sm);
+  }
+
+  /* Sørg for at filter-boksen vises på mobil */
+  .filterBox {
+    display: flex;
+    width: 100%;
+  }
+
+  .filterToggle {
+    font-size: 0.8125rem;
+    padding: var(--space-sm);
+  }
+
+  .filterPanel {
+    padding: var(--space-sm) 0;
+  }
+
+  .filterButtons {
+    gap: 6px;
+  }
+
+  /* Tastaturhint skjules på touch-enheter */
+  .hint {
+    display: none;
   }
 }
 

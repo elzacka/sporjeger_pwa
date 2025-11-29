@@ -77,4 +77,10 @@
   .main.hasResults {
     padding-top: var(--space-lg);
   }
+
+  .footer {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: var(--space-md);
+  }
 }
