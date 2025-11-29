@@ -27,12 +27,21 @@ export function useAuth() {
 
     // Lytt pa auth-endringer
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
         setState({
           user: session?.user ?? null,
           session,
           isLoading: false
         })
+
+        // Redirect til admin etter vellykket innlogging
+        // (Supabase stripper hash-fragmenter, sa vi ma gjore det manuelt)
+        if (event === 'SIGNED_IN' && session) {
+          const currentHash = window.location.hash
+          if (!currentHash || currentHash === '#/' || currentHash === '#') {
+            window.location.hash = '#/admin'
+          }
+        }
       }
     )
 
