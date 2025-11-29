@@ -1,42 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import type { ToolType, PricingModel, Platform, IntelCyclePhase } from '@/types/database'
+import { TOOL_TYPES, PRICING_MODELS, PLATFORMS, INTEL_PHASES } from '@/constants/filters'
 import styles from './AdminPanel.module.css'
-
-// Dropdown-valg
-const TOOL_TYPES: { value: ToolType; label: string }[] = [
-  { value: 'web', label: 'Web' },
-  { value: 'terminal', label: 'Terminal' },
-  { value: 'desktop', label: 'Desktop' },
-  { value: 'mobile', label: 'Mobile' },
-  { value: 'browser_extension', label: 'Nettleserutvidelse' },
-  { value: 'api', label: 'API' },
-  { value: 'dork', label: 'Dork' },
-  { value: 'database', label: 'Database' },
-]
-
-const PRICING_MODELS: { value: PricingModel; label: string }[] = [
-  { value: 'free', label: 'Gratis' },
-  { value: 'freemium', label: 'Gratish' },
-  { value: 'paid', label: 'Betalt' },
-]
-
-const PLATFORMS: { value: Platform; label: string }[] = [
-  { value: 'web', label: 'Web' },
-  { value: 'windows', label: 'Windows' },
-  { value: 'macos', label: 'macOS' },
-  { value: 'linux', label: 'Linux' },
-  { value: 'android', label: 'Android' },
-  { value: 'ios', label: 'iOS' },
-]
-
-const INTEL_PHASES: { value: IntelCyclePhase; label: string }[] = [
-  { value: 'planning', label: 'Planlegging' },
-  { value: 'collection', label: 'Innsamling' },
-  { value: 'processing', label: 'Prosessering' },
-  { value: 'analysis', label: 'Analyse' },
-  { value: 'dissemination', label: 'Distribusjon' },
-]
 
 interface ToolRow {
   id: string
@@ -97,6 +63,12 @@ interface AuditEntry {
 
 type ViewType = 'search' | 'quality' | 'audit'
 type TableType = 'tools' | 'categories'
+
+// Input validering - maksimale lengder
+const MAX_NAME_LENGTH = 200
+const MAX_DESCRIPTION_LENGTH = 2000
+const MAX_URL_LENGTH = 500
+const MAX_SLUG_LENGTH = 100
 
 export function AdminPanel() {
   const [view, setView] = useState<ViewType>('search')
@@ -170,21 +142,30 @@ export function AdminPanel() {
     }
   }, [view])
 
+  // Sanitize SQL wildcard characters for ilike queries
+  const sanitizeForIlike = (input: string): string => {
+    return input
+      .replace(/\\/g, '\\\\')
+      .replace(/%/g, '\\%')
+      .replace(/_/g, '\\_')
+  }
+
   // Sok i valgt tabell
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) {
       setResults([])
       return
     }
 
     setIsSearching(true)
+    const sanitizedQuery = sanitizeForIlike(searchQuery)
 
     try {
       if (table === 'tools') {
         const { data, error } = await supabase
           .from('tools')
           .select('id, name, slug, description, url, tool_type, requires_registration, requires_manual_url, pricing_model, platforms, intel_cycle_phases, regions, is_active, last_verified')
-          .or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
+          .or(`name.ilike.%${sanitizedQuery}%,description.ilike.%${sanitizedQuery}%`)
           .order('name')
           .limit(50)
 
@@ -194,7 +175,7 @@ export function AdminPanel() {
         const { data, error } = await supabase
           .from('categories')
           .select('id, name, slug, description')
-          .or(`name.ilike.%${searchQuery}%,slug.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`)
+          .or(`name.ilike.%${sanitizedQuery}%,slug.ilike.%${sanitizedQuery}%,description.ilike.%${sanitizedQuery}%`)
           .order('name')
           .limit(50)
 
@@ -206,7 +187,7 @@ export function AdminPanel() {
     } finally {
       setIsSearching(false)
     }
-  }
+  }, [searchQuery, table])
 
   // Sok ved Enter eller etter 500ms
   useEffect(() => {
@@ -216,7 +197,7 @@ export function AdminPanel() {
       }
     }, 500)
     return () => clearTimeout(timer)
-  }, [searchQuery, table])
+  }, [searchQuery, table, handleSearch])
 
   // Start redigering
   const startEditing = (item: ToolRow | CategoryRow) => {
@@ -242,7 +223,9 @@ export function AdminPanel() {
       // Fjern id fra data som skal oppdateres
       const { id, ...dataToUpdate } = editData
 
-      console.log('Lagrer til', table, 'med id', editingId, ':', dataToUpdate)
+      if (import.meta.env.DEV) {
+        console.log('Lagrer til', table, 'med id', editingId, ':', dataToUpdate)
+      }
 
       const { data, error } = await supabase
         .from(table)
@@ -250,7 +233,9 @@ export function AdminPanel() {
         .eq('id', editingId)
         .select()
 
-      console.log('Supabase respons:', { data, error })
+      if (import.meta.env.DEV) {
+        console.log('Supabase respons:', { data, error })
+      }
 
       if (error) throw error
 
@@ -289,14 +274,12 @@ export function AdminPanel() {
   }
 
   // Tving refresh av hovedappen
-  const refreshMainApp = () => {
+  const refreshMainApp = async () => {
     if ('caches' in window) {
-      caches.keys().then(names => {
-        names.forEach(name => caches.delete(name))
-      })
+      const names = await caches.keys()
+      await Promise.all(names.map(name => caches.delete(name)))
     }
     window.location.href = '/'
-    window.location.reload()
   }
 
   // Formater dato
@@ -403,7 +386,8 @@ export function AdminPanel() {
                           type="text"
                           className={styles.editInput}
                           value={String(editData.name ?? '')}
-                          onChange={e => updateField('name', e.target.value)}
+                          onChange={e => updateField('name', e.target.value.slice(0, MAX_NAME_LENGTH))}
+                          maxLength={MAX_NAME_LENGTH}
                         />
                       </label>
 
@@ -415,7 +399,8 @@ export function AdminPanel() {
                               type="text"
                               className={styles.editInput}
                               value={String(editData.slug ?? '')}
-                              onChange={e => updateField('slug', e.target.value)}
+                              onChange={e => updateField('slug', e.target.value.slice(0, MAX_SLUG_LENGTH))}
+                              maxLength={MAX_SLUG_LENGTH}
                             />
                           </label>
 
@@ -424,7 +409,8 @@ export function AdminPanel() {
                             <textarea
                               className={styles.editTextarea}
                               value={String(editData.description ?? '')}
-                              onChange={e => updateField('description', e.target.value)}
+                              onChange={e => updateField('description', e.target.value.slice(0, MAX_DESCRIPTION_LENGTH))}
+                              maxLength={MAX_DESCRIPTION_LENGTH}
                               rows={3}
                             />
                           </label>
@@ -435,7 +421,8 @@ export function AdminPanel() {
                               type="text"
                               className={styles.editInput}
                               value={String(editData.url ?? '')}
-                              onChange={e => updateField('url', e.target.value)}
+                              onChange={e => updateField('url', e.target.value.slice(0, MAX_URL_LENGTH))}
+                              maxLength={MAX_URL_LENGTH}
                             />
                           </label>
 

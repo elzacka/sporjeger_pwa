@@ -1,6 +1,6 @@
 # Sporjeger
 
-Norsk OSINT-verktøykatalog. Minimalistisk PWA bygget med React 19 og Supabase.
+Norsk OSINT-verktøykatalog. Minimalistisk PWA bygget med React 19.2 og Supabase.
 
 ## Oppsett
 
@@ -36,7 +36,7 @@ VITE_SUPABASE_ANON_KEY=din-anon-key
 npm run dev
 ```
 
-Åpne http://localhost:5173
+Åpne http://localhost:5174
 
 ## Bygg for produksjon
 
@@ -61,5 +61,5 @@ src/
 
 - Fuzzy-søk med naturlig språk ("gratis terminal")
 - Offline-støtte via Service Worker
-- Tastatursnarvei: `/` fokuserer søk, `Esc` nullstiller
+- Tastatursnarvei: `Ctrl+K` fokuserer søk, `Esc` nullstiller
 - Minimalistisk, distraksjonsfritt design

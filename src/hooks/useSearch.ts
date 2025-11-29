@@ -1,7 +1,10 @@
-import { useMemo, useDeferredValue } from 'react'
-import Fuse, { type IFuseOptions } from 'fuse.js'
+import { useMemo, useDeferredValue, useRef } from 'react'
+import Fuse, { type IFuseOptions, type FuseIndex } from 'fuse.js'
 import type { ToolWithCategories } from '@/types/database'
 import type { ParsedFilters } from './useFilters'
+
+// Fuse.js sokenokkler for indeks-bygging
+const fuseKeys: string[] = ['name', 'description', 'category_names', 'url', 'regions']
 
 // Fuse.js konfigurasjon for fuzzy search
 const fuseOptions: IFuseOptions<ToolWithCategories> = {
@@ -29,11 +32,28 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
   // Deferred value for smooth UI under skriving
   const deferredQuery = useDeferredValue(query)
 
-  // Bygg Fuse-indeks når verktøylisten endres
-  const fuse = useMemo(
-    () => new Fuse(tools, fuseOptions),
-    [tools]
-  )
+  // Cache for pre-bygd indeks - unnga rekonstruksjon ved samme antall verktoy
+  const indexCacheRef = useRef<{
+    count: number
+    index: FuseIndex<ToolWithCategories>
+  } | null>(null)
+
+  // Bygg Fuse-indeks med pre-bygd indeks for bedre ytelse
+  const fuse = useMemo(() => {
+    if (tools.length === 0) return null
+
+    // Gjenbruk eksisterende indeks hvis antall verktoy er likt
+    let index: FuseIndex<ToolWithCategories>
+    if (indexCacheRef.current && indexCacheRef.current.count === tools.length) {
+      index = indexCacheRef.current.index
+    } else {
+      // Bygg ny indeks og cache den
+      index = Fuse.createIndex(fuseKeys, tools)
+      indexCacheRef.current = { count: tools.length, index }
+    }
+
+    return new Fuse(tools, fuseOptions, index)
+  }, [tools])
 
   // Filtrer og søk
   const results = useMemo(() => {
@@ -83,7 +103,7 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
     }
 
     // Hvis vi har en søkestreng, bruk fuzzy search
-    if (deferredQuery.trim()) {
+    if (deferredQuery.trim() && fuse) {
       const searchResults = fuse.search(deferredQuery, { limit: 50 })
 
       // Hvis vi har filtre, filtrer fuzzy-resultater

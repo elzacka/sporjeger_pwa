@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
-import type { CategoryWithCount, ToolType, PricingModel, IntelCyclePhase } from '@/types/database'
+import { useState, useRef, useEffect, useMemo, memo } from 'react'
+import type { CategoryWithCount } from '@/types/database'
 import { t } from '@/lib/i18n'
+import { TOOL_TYPES, PRICING_MODELS, INTEL_PHASES, REGIONS } from '@/constants/filters'
 import styles from './CommandSearch.module.css'
 
 // Filter-typer
@@ -25,51 +26,17 @@ interface CommandSearchProps {
 // Placeholder-tekster som roterer
 const placeholderTexts = [
   'Let i arkiver...',
-  'Finn sårbarheter...',
-  'Spor fartøy...',
-  'Søk i sosiale medier...',
+  'Finn sarbarheter...',
+  'Spor fartoy...',
+  'Sok i sosiale medier...',
   'Finn folk...',
   'Analyser store datamengder...',
-  'Finn mønstre...',
-  'Bruk verktøy for geolokalisering...',
+  'Finn monstre...',
+  'Bruk verktoy for geolokalisering...',
   'Analyser nettsider...',
 ]
 
-// Alle filterverdier med norske labels
-const typeFilters: { value: ToolType; label: string }[] = [
-  { value: 'web', label: 'Nettside' },
-  { value: 'terminal', label: 'Terminal' },
-  { value: 'desktop', label: 'Program' },
-  { value: 'browser_extension', label: 'Utvidelse' },
-  { value: 'mobile', label: 'Mobilapp' },
-  { value: 'api', label: 'API' },
-  { value: 'dork', label: 'Søkeoperator' },
-  { value: 'database', label: 'Database' },
-]
-
-const priceFilters: { value: PricingModel; label: string }[] = [
-  { value: 'free', label: 'Gratis' },
-  { value: 'freemium', label: 'Gratish' },
-  { value: 'paid', label: 'Betalt' },
-]
-
-const regionFilters = [
-  { value: 'NO', label: 'Norge' },
-  { value: 'global', label: 'Global' },
-  { value: 'SE', label: 'Sverige' },
-  { value: 'DK', label: 'Danmark' },
-]
-
-// OSINT-syklus i korrekt rekkefølge
-const phaseFilters: { value: IntelCyclePhase; label: string }[] = [
-  { value: 'planning', label: 'Planlegging' },
-  { value: 'collection', label: 'Innsamling' },
-  { value: 'processing', label: 'Prosessering' },
-  { value: 'analysis', label: 'Analyse' },
-  { value: 'dissemination', label: 'Formidling' },
-]
-
-export function CommandSearch({
+export const CommandSearch = memo(function CommandSearch({
   categories,
   query,
   activeFilters,
@@ -114,8 +81,8 @@ export function CommandSearch({
       })
     }
 
-    // Søk i verktøytyper
-    typeFilters.forEach(tf => {
+    // Sok i verktoytyper
+    TOOL_TYPES.forEach(tf => {
       if (tf.label.toLowerCase().includes(q) || tf.value.includes(q)) {
         results.push({
           type: 'type',
@@ -126,8 +93,8 @@ export function CommandSearch({
       }
     })
 
-    // Søk i prismodeller
-    priceFilters.forEach(pf => {
+    // Sok i prismodeller
+    PRICING_MODELS.forEach(pf => {
       if (pf.label.toLowerCase().includes(q) || pf.value.includes(q)) {
         results.push({
           type: 'price',
@@ -138,8 +105,8 @@ export function CommandSearch({
       }
     })
 
-    // Søk i regioner
-    regionFilters.forEach(rf => {
+    // Sok i regioner
+    REGIONS.forEach(rf => {
       if (rf.label.toLowerCase().includes(q) || rf.value.toLowerCase().includes(q)) {
         results.push({
           type: 'region',
@@ -150,8 +117,8 @@ export function CommandSearch({
       }
     })
 
-    // Søk i faser
-    phaseFilters.forEach(pf => {
+    // Sok i faser
+    INTEL_PHASES.forEach(pf => {
       if (pf.label.toLowerCase().includes(q) || pf.value.includes(q)) {
         results.push({
           type: 'phase',
@@ -357,7 +324,7 @@ export function CommandSearch({
             <div className={styles.filterSection}>
               <span className={styles.filterSectionLabel}>Fase</span>
               <div className={styles.filterButtons}>
-                {phaseFilters.map(phase => (
+                {INTEL_PHASES.map(phase => (
                   <button
                     key={phase.value}
                     type="button"
@@ -407,7 +374,7 @@ export function CommandSearch({
       </div>
     </div>
   )
-}
+})
 
 function getFilterTypeLabel(type: FilterType): string {
   switch (type) {

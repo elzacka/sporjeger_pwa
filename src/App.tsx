@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { useTools } from '@/hooks/useTools'
 import { useFilters } from '@/hooks/useFilters'
 import { useSearch } from '@/hooks/useSearch'
 import { CommandSearch } from '@/components/CommandSearch'
 import { ToolList } from '@/components/ToolList'
 import { HelpGuide } from '@/components/HelpGuide'
-import { AdminPanel } from '@/components/AdminPanel'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
+
+// Lazy load AdminPanel - lastes kun nar admin-rute besokes
+const AdminPanel = lazy(() => import('@/components/AdminPanel').then(m => ({ default: m.AdminPanel })))
 
 // Admin-nokkel fra miljovariabel (sett i .env)
 const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || ''
@@ -33,8 +35,11 @@ function useHashRoute() {
 
 // Sjekk om admin-nokkel er gyldig
 function checkAdminAccess(): boolean {
-  // Hvis ingen nokkel er satt i env, tillat tilgang (utvikling)
-  if (!ADMIN_KEY) return true
+  // Krev alltid nokkel - ingen fallback til apen tilgang
+  if (!ADMIN_KEY) {
+    console.warn('VITE_ADMIN_KEY er ikke satt. Admin-tilgang er deaktivert.')
+    return false
+  }
 
   // Hent nokkel fra URL query params
   const hash = window.location.hash
@@ -89,7 +94,11 @@ export default function App() {
         </main>
       )
     }
-    return <AdminPanel />
+    return (
+      <Suspense fallback={<div className={styles.loading}>Laster admin...</div>}>
+        <AdminPanel />
+      </Suspense>
+    )
   }
 
   // Loading state
@@ -141,9 +150,9 @@ export default function App() {
           className={styles.refreshButton}
           onClick={handleRefresh}
           disabled={isRefreshing}
-          title="Tøm cache og hent oppdatert data fra Supabase"
+          title={t.ui.refreshTitle}
         >
-          {isRefreshing ? 'Oppdaterer...' : 'Oppdater'}
+          {isRefreshing ? t.ui.refreshing : t.ui.refresh}
         </button>
         <HelpGuide />
       </footer>

@@ -52,8 +52,7 @@ export function HelpGuide() {
               <section className={styles.section}>
                 <h3>Hva er Sporjeger?</h3>
                 <p>
-                  Sporjeger er en katalog over OSINT-verktøy (Open Source Intelligence).
-                  Med over 1000 verktøy for det du ønsker å finne/finne ut av i åpne kilder på nett.
+                  Sporjeger er en katalog med over 1000 OSINT-verktøy (Open Source Intelligence). For det du ønsker å finne eller finne ut av blant åpne kilder på nett.
                 </p>
               </section>
 
@@ -89,7 +88,7 @@ export function HelpGuide() {
                 <ul>
                   <li>Appen fungerer offline etter første besøk</li>
                   <li>Søk fungerer på norsk og engelsk</li>
-                  <li>Klikk på et verktøy-navn for å åpne det</li>
+                  <li>Klikk på et verktøynavn for å åpne det</li>
                 </ul>
               </section>
 

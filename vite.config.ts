@@ -4,6 +4,17 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   base: '/sporjeger_pwa/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'supabase': ['@supabase/supabase-js'],
+          'fuse': ['fuse.js']
+        }
+      }
+    }
+  },
   plugins: [
     react(),
     VitePWA({

@@ -2,6 +2,24 @@
 -- RLS-POLICYER FOR SPORJEGER
 -- Kjor dette i Supabase SQL Editor
 -- ============================================================
+--
+-- !! SIKKERHETSADVARSEL !!
+-- Disse policyene gir OFFENTLIG skrivetilgang til databasen.
+-- Dette er kun ment for utvikling og demo-bruk.
+--
+-- FOR PRODUKSJON: Implementer Supabase Auth og bruk disse policyene i stedet:
+--
+--   CREATE POLICY "Auth insert tools" ON tools
+--     FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+--
+--   CREATE POLICY "Auth update tools" ON tools
+--     FOR UPDATE USING (auth.role() = 'authenticated')
+--     WITH CHECK (auth.role() = 'authenticated');
+--
+-- Se Supabase-dokumentasjonen for fullstendig autentiseringsoppsett:
+-- https://supabase.com/docs/guides/auth
+--
+-- ============================================================
 -- Balansert sikkerhet: Les for alle, skriv for admin
 -- DELETE er bevisst utelatt for tools/categories for a forhindre utilsiktet sletting
 -- Scriptet kan kjores flere ganger (idempotent)

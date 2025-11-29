@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { ToolWithCategories } from '@/types/database'
 import { t } from '@/lib/i18n'
 import styles from './ToolCard.module.css'
@@ -6,7 +7,7 @@ interface ToolCardProps {
   tool: ToolWithCategories
 }
 
-export function ToolCard({ tool }: ToolCardProps) {
+export const ToolCard = memo(function ToolCard({ tool }: ToolCardProps) {
   // Ekstraher domene fra URL for visning
   const displayUrl = (tool.url ?? '')
     .replace(/^https?:\/\//, '')
@@ -21,6 +22,7 @@ export function ToolCard({ tool }: ToolCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
+            aria-label={`${tool.name} (apnes i nytt vindu)`}
           >
             {tool.name}
           </a>
@@ -71,4 +73,4 @@ export function ToolCard({ tool }: ToolCardProps) {
       </div>
     </article>
   )
-}
+})
