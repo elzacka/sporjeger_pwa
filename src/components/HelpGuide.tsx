@@ -52,6 +52,7 @@ export function HelpGuide() {
               <p className={styles.ingress}>
                 Katalog med over 1000 OSINT-verktøy for research i åpne kilder.
               </p>
+              <p className={styles.footnote}>OSINT = Open Source Intelligence</p>
 
               <section className={styles.section}>
                 <h3>Slik søker du</h3>

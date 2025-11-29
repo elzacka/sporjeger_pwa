@@ -92,10 +92,19 @@
 }
 
 .ingress {
-  margin: 0 0 var(--space-lg);
+  margin: 0 0 var(--space-xs);
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--text-muted);
+}
+
+.footnote {
+  margin: 0 0 var(--space-lg);
+  font-size: 0.8125rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-muted);
+  opacity: 0.8;
 }
 
 .section {
