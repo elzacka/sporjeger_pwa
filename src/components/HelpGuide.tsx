@@ -68,19 +68,19 @@ export function HelpGuide() {
                 <h3>Badges</h3>
                 <div className={styles.badgeList}>
                   <div className={styles.badgeItem}>
-                    <span className={styles.badge} data-type="terminal">Terminal</span>
+                    <span className={`${styles.badge} ${styles.badgeTerminal}`}>Terminal</span>
                     <span>Kommandolinjeverktøy</span>
                   </div>
                   <div className={styles.badgeItem}>
-                    <span className={styles.badge} data-type="registration">Registrering</span>
+                    <span className={`${styles.badge} ${styles.badgeRegistration}`}>Registrering</span>
                     <span>Krever at du oppretter konto</span>
                   </div>
                   <div className={styles.badgeItem}>
-                    <span className={styles.badge} data-type="freemium">Gratish</span>
+                    <span className={`${styles.badge} ${styles.badgeFreemium}`}>Gratish</span>
                     <span>Gratis med betalte tilleggsfunksjoner</span>
                   </div>
                   <div className={styles.badgeItem}>
-                    <span className={styles.badge} data-type="paid">Betalt</span>
+                    <span className={`${styles.badge} ${styles.badgePaid}`}>Betalt</span>
                     <span>Krever betaling for bruk</span>
                   </div>
                 </div>

@@ -178,9 +178,11 @@
 }
 
 .badge {
-  display: inline-flex;
+  display: inline-flex !important;
+  visibility: visible !important;
   align-items: center;
   justify-content: center;
+  min-width: 60px;
   height: 1.25rem;
   padding: 0 6px;
   font-family: var(--font-mono);
@@ -190,22 +192,23 @@
   border-radius: 2px;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  flex-shrink: 0;
 }
 
-.badge[data-type="terminal"] {
-  background: var(--badge-terminal);
+.badgeTerminal {
+  background: var(--badge-terminal) !important;
 }
 
-.badge[data-type="registration"] {
-  background: var(--badge-registration);
+.badgeRegistration {
+  background: var(--badge-registration) !important;
 }
 
-.badge[data-type="freemium"] {
-  background: var(--badge-freemium);
+.badgeFreemium {
+  background: var(--badge-freemium) !important;
 }
 
-.badge[data-type="paid"] {
-  background: var(--badge-paid);
+.badgePaid {
+  background: var(--badge-paid) !important;
 }
 
 /* Installasjons-liste */
