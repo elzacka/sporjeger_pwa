@@ -63,7 +63,9 @@ export const t = {
     'facial-recognition': 'Ansiktsgjenkjenning',
     'crypto': 'Kryptovaluta',
     'satellite-imagery': 'Satellittbilder',
-    'street-view': 'Gatebilder'
+    'street-view': 'Gatebilder',
+    'training': 'Opplæring',
+    'documentation': 'Dokumentasjon'
   },
 
   // UI-tekster
