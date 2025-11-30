@@ -34,13 +34,10 @@ export function useAuth() {
           isLoading: false
         })
 
-        // Redirect til admin etter vellykket innlogging
-        // (Supabase stripper hash-fragmenter, så vi må gjøre det manuelt)
-        if (event === 'SIGNED_IN' && session) {
-          const currentHash = window.location.hash
-          if (!currentHash || currentHash === '#/' || currentHash === '#') {
-            window.location.hash = '#/admin'
-          }
+        // Redirect til admin kun ved ny innlogging via magic link
+        // Sjekk at URL inneholder access_token (fra magic link)
+        if (event === 'SIGNED_IN' && session && window.location.href.includes('access_token')) {
+          window.location.hash = '#/admin'
         }
       }
     )
