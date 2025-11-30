@@ -61,7 +61,7 @@ interface AuditEntry {
   new_data: { name?: string } | null
 }
 
-type ViewType = 'search' | 'quality' | 'audit'
+type ViewType = 'search' | 'table' | 'quality' | 'audit'
 type TableType = 'tools' | 'categories'
 
 // Input validering - maksimale lengder
@@ -92,6 +92,19 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
   // Audit log
   const [auditLog, setAuditLog] = useState<AuditEntry[]>([])
   const [isLoadingAudit, setIsLoadingAudit] = useState(false)
+
+  // Tabellvisning
+  const [allTools, setAllTools] = useState<(ToolRow & { category_slugs: string[]; category_names: string[] })[]>([])
+  const [allCategories, setAllCategories] = useState<{ id: string; slug: string; name: string }[]>([])
+  const [isLoadingTable, setIsLoadingTable] = useState(false)
+  const [tableFilter, setTableFilter] = useState('')
+  const [tableSortField, setTableSortField] = useState<string>('name')
+  const [tableSortDir, setTableSortDir] = useState<'asc' | 'desc'>('asc')
+  const [selectedTools, setSelectedTools] = useState<Set<string>>(new Set())
+  const [bulkField, setBulkField] = useState<string>('')
+  const [bulkValue, setBulkValue] = useState<string>('')
+  const [editingToolId, setEditingToolId] = useState<string | null>(null)
+  const [editingField, setEditingField] = useState<string | null>(null)
 
   // Hent kvalitetsdata
   const loadQualityData = async () => {
@@ -137,14 +150,167 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
     }
   }
 
+  // Hent alle verktøy for tabellvisning
+  const loadTableData = async () => {
+    setIsLoadingTable(true)
+    try {
+      // Hent kategorier
+      const { data: cats } = await supabase
+        .from('categories')
+        .select('id, slug, name')
+        .order('name')
+      if (cats) setAllCategories(cats)
+
+      // Hent alle verktøy med kategorier
+      let tools: typeof allTools = []
+      let offset = 0
+      while (true) {
+        const { data } = await supabase
+          .from('tools_with_categories')
+          .select('*')
+          .range(offset, offset + 999)
+        if (!data || data.length === 0) break
+        tools = tools.concat(data as typeof allTools)
+        offset += 1000
+        if (data.length < 1000) break
+      }
+      setAllTools(tools)
+    } catch (err) {
+      console.error('Feil ved lasting av tabelldata:', err)
+    } finally {
+      setIsLoadingTable(false)
+    }
+  }
+
+  // Oppdater enkeltfelt direkte
+  const updateToolField = async (toolId: string, field: string, value: string | boolean | string[]) => {
+    setSaveStatus('saving')
+    try {
+      const { error } = await supabase
+        .from('tools')
+        .update({ [field]: value })
+        .eq('id', toolId)
+
+      if (error) throw error
+
+      // Oppdater lokal state
+      setAllTools(prev => prev.map(t =>
+        t.id === toolId ? { ...t, [field]: value } : t
+      ))
+      setSaveStatus('saved')
+      setTimeout(() => setSaveStatus('idle'), 1000)
+    } catch (err) {
+      console.error('Feil ved oppdatering:', err)
+      setSaveStatus('error')
+    }
+    setEditingToolId(null)
+    setEditingField(null)
+  }
+
+  // Legg til/fjern kategori for verktøy
+  const toggleToolCategory = async (toolId: string, categorySlug: string) => {
+    const tool = allTools.find(t => t.id === toolId)
+    if (!tool) return
+
+    const category = allCategories.find(c => c.slug === categorySlug)
+    if (!category) return
+
+    const hasCategory = tool.category_slugs?.includes(categorySlug)
+
+    try {
+      if (hasCategory) {
+        await supabase
+          .from('tool_categories')
+          .delete()
+          .eq('tool_id', toolId)
+          .eq('category_id', category.id)
+
+        setAllTools(prev => prev.map(t =>
+          t.id === toolId ? {
+            ...t,
+            category_slugs: t.category_slugs.filter(s => s !== categorySlug),
+            category_names: t.category_names.filter(n => n !== category.name)
+          } : t
+        ))
+      } else {
+        await supabase
+          .from('tool_categories')
+          .insert({ tool_id: toolId, category_id: category.id })
+
+        setAllTools(prev => prev.map(t =>
+          t.id === toolId ? {
+            ...t,
+            category_slugs: [...(t.category_slugs || []), categorySlug],
+            category_names: [...(t.category_names || []), category.name]
+          } : t
+        ))
+      }
+    } catch (err) {
+      console.error('Feil ved kategoriendring:', err)
+    }
+  }
+
+  // Bulk-oppdatering
+  const applyBulkUpdate = async () => {
+    if (!bulkField || selectedTools.size === 0) return
+
+    setSaveStatus('saving')
+    try {
+      let value: string | boolean = bulkValue
+      if (bulkField === 'is_active' || bulkField === 'requires_registration' || bulkField === 'requires_manual_url') {
+        value = bulkValue === 'true'
+      }
+
+      for (const toolId of selectedTools) {
+        await supabase
+          .from('tools')
+          .update({ [bulkField]: value })
+          .eq('id', toolId)
+      }
+
+      // Oppdater lokal state
+      setAllTools(prev => prev.map(t =>
+        selectedTools.has(t.id) ? { ...t, [bulkField]: value } : t
+      ))
+
+      setSelectedTools(new Set())
+      setBulkField('')
+      setBulkValue('')
+      setSaveStatus('saved')
+      setTimeout(() => setSaveStatus('idle'), 1000)
+    } catch (err) {
+      console.error('Feil ved bulk-oppdatering:', err)
+      setSaveStatus('error')
+    }
+  }
+
   // Last data basert på view
   useEffect(() => {
     if (view === 'quality') {
       loadQualityData()
     } else if (view === 'audit') {
       loadAuditLog()
+    } else if (view === 'table') {
+      loadTableData()
     }
   }, [view])
+
+  // Filtrert og sortert verktøyliste for tabellvisning
+  const filteredTools = allTools
+    .filter(t => {
+      if (!tableFilter) return true
+      const q = tableFilter.toLowerCase()
+      return t.name.toLowerCase().includes(q) ||
+        t.url.toLowerCase().includes(q) ||
+        t.description?.toLowerCase().includes(q) ||
+        t.category_names?.some(c => c.toLowerCase().includes(q))
+    })
+    .sort((a, b) => {
+      const aVal = String((a as unknown as Record<string, unknown>)[tableSortField] ?? '')
+      const bVal = String((b as unknown as Record<string, unknown>)[tableSortField] ?? '')
+      const cmp = aVal.localeCompare(bVal, 'nb')
+      return tableSortDir === 'asc' ? cmp : -cmp
+    })
 
   // Sanitize SQL wildcard characters for ilike queries
   const sanitizeForIlike = (input: string): string => {
@@ -339,6 +505,13 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
           onClick={() => setView('search')}
         >
           Søk og rediger
+        </button>
+        <button
+          type="button"
+          className={`${styles.navButton} ${view === 'table' ? styles.active : ''}`}
+          onClick={() => setView('table')}
+        >
+          Tabell
         </button>
         <button
           type="button"
@@ -630,6 +803,293 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
             ))}
           </div>
         </>
+      )}
+
+      {/* TABELLVISNING */}
+      {view === 'table' && (
+        <div className={styles.tableView}>
+          {isLoadingTable ? (
+            <p className={styles.loading}>Laster alle verktøy...</p>
+          ) : (
+            <>
+              {/* Kontroller */}
+              <div className={styles.tableControls}>
+                <input
+                  type="text"
+                  className={styles.searchInput}
+                  placeholder="Filtrer verktøy..."
+                  value={tableFilter}
+                  onChange={e => setTableFilter(e.target.value)}
+                />
+                <span className={styles.tableCount}>
+                  {filteredTools.length} av {allTools.length} verktøy
+                </span>
+              </div>
+
+              {/* Bulk-operasjoner */}
+              {selectedTools.size > 0 && (
+                <div className={styles.bulkControls}>
+                  <span>{selectedTools.size} valgt</span>
+                  <select
+                    className={styles.editSelect}
+                    value={bulkField}
+                    onChange={e => setBulkField(e.target.value)}
+                  >
+                    <option value="">Velg felt...</option>
+                    <option value="is_active">Status</option>
+                    <option value="pricing_model">Pris</option>
+                    <option value="requires_registration">Registrering</option>
+                    <option value="tool_type">Type</option>
+                  </select>
+                  {bulkField && (
+                    <>
+                      {bulkField === 'is_active' || bulkField === 'requires_registration' || bulkField === 'requires_manual_url' ? (
+                        <select
+                          className={styles.editSelect}
+                          value={bulkValue}
+                          onChange={e => setBulkValue(e.target.value)}
+                        >
+                          <option value="">Velg...</option>
+                          <option value="true">Ja</option>
+                          <option value="false">Nei</option>
+                        </select>
+                      ) : bulkField === 'pricing_model' ? (
+                        <select
+                          className={styles.editSelect}
+                          value={bulkValue}
+                          onChange={e => setBulkValue(e.target.value)}
+                        >
+                          <option value="">Velg...</option>
+                          {PRICING_MODELS.map(p => (
+                            <option key={p.value} value={p.value}>{p.label}</option>
+                          ))}
+                        </select>
+                      ) : bulkField === 'tool_type' ? (
+                        <select
+                          className={styles.editSelect}
+                          value={bulkValue}
+                          onChange={e => setBulkValue(e.target.value)}
+                        >
+                          <option value="">Velg...</option>
+                          {TOOL_TYPES.map(t => (
+                            <option key={t.value} value={t.value}>{t.label}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          className={styles.editInput}
+                          value={bulkValue}
+                          onChange={e => setBulkValue(e.target.value)}
+                          placeholder="Ny verdi"
+                        />
+                      )}
+                      <button
+                        type="button"
+                        className={styles.saveButton}
+                        onClick={applyBulkUpdate}
+                        disabled={!bulkValue}
+                      >
+                        Oppdater {selectedTools.size}
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={() => setSelectedTools(new Set())}
+                  >
+                    Avbryt
+                  </button>
+                </div>
+              )}
+
+              {/* Tabell */}
+              <div className={styles.tableWrapper}>
+                <table className={styles.dataTable}>
+                  <thead>
+                    <tr>
+                      <th className={styles.checkCol}>
+                        <input
+                          type="checkbox"
+                          checked={selectedTools.size === filteredTools.length && filteredTools.length > 0}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setSelectedTools(new Set(filteredTools.map(t => t.id)))
+                            } else {
+                              setSelectedTools(new Set())
+                            }
+                          }}
+                        />
+                      </th>
+                      <th
+                        className={styles.sortable}
+                        onClick={() => {
+                          if (tableSortField === 'name') {
+                            setTableSortDir(d => d === 'asc' ? 'desc' : 'asc')
+                          } else {
+                            setTableSortField('name')
+                            setTableSortDir('asc')
+                          }
+                        }}
+                      >
+                        Navn {tableSortField === 'name' && (tableSortDir === 'asc' ? '^' : 'v')}
+                      </th>
+                      <th>URL</th>
+                      <th
+                        className={styles.sortable}
+                        onClick={() => {
+                          if (tableSortField === 'pricing_model') {
+                            setTableSortDir(d => d === 'asc' ? 'desc' : 'asc')
+                          } else {
+                            setTableSortField('pricing_model')
+                            setTableSortDir('asc')
+                          }
+                        }}
+                      >
+                        Pris {tableSortField === 'pricing_model' && (tableSortDir === 'asc' ? '^' : 'v')}
+                      </th>
+                      <th>Reg.</th>
+                      <th>Type</th>
+                      <th>Aktiv</th>
+                      <th>Kategorier</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTools.slice(0, 100).map(tool => (
+                      <tr key={tool.id} className={!tool.is_active ? styles.inactive : ''}>
+                        <td className={styles.checkCol}>
+                          <input
+                            type="checkbox"
+                            checked={selectedTools.has(tool.id)}
+                            onChange={e => {
+                              const newSet = new Set(selectedTools)
+                              if (e.target.checked) {
+                                newSet.add(tool.id)
+                              } else {
+                                newSet.delete(tool.id)
+                              }
+                              setSelectedTools(newSet)
+                            }}
+                          />
+                        </td>
+                        <td className={styles.nameCol}>
+                          <strong>{tool.name}</strong>
+                          {tool.description && (
+                            <span className={styles.descPreview} title={tool.description}>
+                              {tool.description.slice(0, 50)}...
+                            </span>
+                          )}
+                        </td>
+                        <td className={styles.urlCol}>
+                          <a href={tool.url} target="_blank" rel="noopener noreferrer">
+                            {tool.url.replace(/^https?:\/\//, '').slice(0, 30)}
+                          </a>
+                        </td>
+                        <td
+                          className={styles.clickable}
+                          onClick={() => {
+                            setEditingToolId(tool.id)
+                            setEditingField('pricing_model')
+                          }}
+                        >
+                          {editingToolId === tool.id && editingField === 'pricing_model' ? (
+                            <select
+                              className={styles.inlineSelect}
+                              value={tool.pricing_model}
+                              onChange={e => updateToolField(tool.id, 'pricing_model', e.target.value)}
+                              onBlur={() => { setEditingToolId(null); setEditingField(null) }}
+                              autoFocus
+                            >
+                              {PRICING_MODELS.map(p => (
+                                <option key={p.value} value={p.value}>{p.label}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <span className={styles.badge} data-type={tool.pricing_model}>
+                              {tool.pricing_model === 'free' ? 'Gratis' : tool.pricing_model === 'freemium' ? 'Gratish' : 'Betalt'}
+                            </span>
+                          )}
+                        </td>
+                        <td
+                          className={styles.clickable}
+                          onClick={() => updateToolField(tool.id, 'requires_registration', !tool.requires_registration)}
+                        >
+                          {tool.requires_registration ? 'Ja' : 'Nei'}
+                        </td>
+                        <td
+                          className={styles.clickable}
+                          onClick={() => {
+                            setEditingToolId(tool.id)
+                            setEditingField('tool_type')
+                          }}
+                        >
+                          {editingToolId === tool.id && editingField === 'tool_type' ? (
+                            <select
+                              className={styles.inlineSelect}
+                              value={tool.tool_type}
+                              onChange={e => updateToolField(tool.id, 'tool_type', e.target.value)}
+                              onBlur={() => { setEditingToolId(null); setEditingField(null) }}
+                              autoFocus
+                            >
+                              {TOOL_TYPES.map(t => (
+                                <option key={t.value} value={t.value}>{t.label}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            tool.tool_type
+                          )}
+                        </td>
+                        <td
+                          className={styles.clickable}
+                          onClick={() => updateToolField(tool.id, 'is_active', !tool.is_active)}
+                        >
+                          {tool.is_active ? 'Ja' : 'Nei'}
+                        </td>
+                        <td className={styles.categoriesCol}>
+                          <div className={styles.categoryTags}>
+                            {tool.category_names?.map(cat => (
+                              <span
+                                key={cat}
+                                className={styles.categoryTag}
+                                onClick={() => {
+                                  const slug = allCategories.find(c => c.name === cat)?.slug
+                                  if (slug) toggleToolCategory(tool.id, slug)
+                                }}
+                                title="Klikk for å fjerne"
+                              >
+                                {cat} x
+                              </span>
+                            ))}
+                            <select
+                              className={styles.addCategorySelect}
+                              value=""
+                              onChange={e => {
+                                if (e.target.value) {
+                                  toggleToolCategory(tool.id, e.target.value)
+                                }
+                              }}
+                            >
+                              <option value="">+</option>
+                              {allCategories
+                                .filter(c => !tool.category_slugs?.includes(c.slug))
+                                .map(c => (
+                                  <option key={c.id} value={c.slug}>{c.name}</option>
+                                ))}
+                            </select>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {filteredTools.length > 100 && (
+                <p className={styles.tableNote}>Viser 100 av {filteredTools.length} verktøy. Bruk filter for å se flere.</p>
+              )}
+            </>
+          )}
+        </div>
       )}
 
       {/* DATAKVALITET VIEW */}

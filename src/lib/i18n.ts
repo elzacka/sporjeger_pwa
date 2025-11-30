@@ -50,6 +50,7 @@ export const t = {
     'transport': 'Transport',
     'companies-finance': 'Selskaper og finans',
     'archiving': 'Arkivering',
+    'archive': 'Arkiv',
     'public-records': 'Offentlige registre',
     'phone': 'Telefon',
     'metadata': 'Metadata',
@@ -58,7 +59,11 @@ export const t = {
     'environment': 'Miljø og natur',
     'people': 'Personsøk',
     'geolocation': 'Geolokalisering',
-    'verification': 'Verifisering'
+    'verification': 'Verifisering',
+    'facial-recognition': 'Ansiktsgjenkjenning',
+    'crypto': 'Kryptovaluta',
+    'satellite-imagery': 'Satellittbilder',
+    'street-view': 'Gatebilder'
   },
 
   // UI-tekster
