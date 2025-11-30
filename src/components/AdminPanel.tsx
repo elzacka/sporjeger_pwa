@@ -137,7 +137,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
     }
   }
 
-  // Last data basert pa view
+  // Last data basert på view
   useEffect(() => {
     if (view === 'quality') {
       loadQualityData()
@@ -154,7 +154,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
       .replace(/_/g, '\\_')
   }
 
-  // Sok i valgt tabell
+  // Søk i valgt tabell
   const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) {
       setResults([])
@@ -187,13 +187,13 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
         setResults(data ?? [])
       }
     } catch (err) {
-      console.error('Sokefeil:', err)
+      console.error('Søkefeil:', err)
     } finally {
       setIsSearching(false)
     }
   }, [searchQuery, table])
 
-  // Sok ved Enter eller etter 500ms
+  // Søk ved Enter eller etter 500ms
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchQuery.trim()) {
@@ -250,7 +250,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
         item.id === editingId ? { ...item, ...editData } as typeof item : item
       ))
 
-      // Lukk redigering og kjor nytt sok for a vise oppdatert data
+      // Lukk redigering og kjør nytt søk for å vise oppdatert data
       setTimeout(() => {
         setEditingId(null)
         setEditData({})
@@ -338,7 +338,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
           className={`${styles.navButton} ${view === 'search' ? styles.active : ''}`}
           onClick={() => setView('search')}
         >
-          Sok og rediger
+          Søk og rediger
         </button>
         <button
           type="button"
@@ -356,7 +356,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
         </button>
       </nav>
 
-      {/* SOK OG REDIGER VIEW */}
+      {/* SØK OG REDIGER VIEW */}
       {view === 'search' && (
         <>
           <div className={styles.controls}>
@@ -366,7 +366,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
                 className={`${styles.tableButton} ${table === 'tools' ? styles.active : ''}`}
                 onClick={() => { setTable('tools'); setResults([]); setSearchQuery('') }}
               >
-                Verktoy ({table === 'tools' ? results.length : '...'})
+                Verktøy ({table === 'tools' ? results.length : '...'})
               </button>
               <button
                 type="button"
@@ -381,7 +381,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
               <input
                 type="text"
                 className={styles.searchInput}
-                placeholder={`Sok i ${table === 'tools' ? 'verktoy' : 'kategorier'}...`}
+                placeholder={`Søk i ${table === 'tools' ? 'verktøy' : 'kategorier'}...`}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSearch()}
@@ -644,7 +644,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
                 <div className={styles.statsGrid}>
                   <div className={styles.statCard}>
                     <span className={styles.statValue}>{qualityStats.total_tools}</span>
-                    <span className={styles.statLabel}>Totalt verktoy</span>
+                    <span className={styles.statLabel}>Totalt verktøy</span>
                   </div>
                   <div className={styles.statCard}>
                     <span className={styles.statValue}>{qualityStats.active_tools}</span>
@@ -664,7 +664,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
                   </div>
                   <div className={styles.statCard}>
                     <span className={styles.statValue}>{qualityStats.broken_urls}</span>
-                    <span className={styles.statLabel}>Dode lenker</span>
+                    <span className={styles.statLabel}>Døde lenker</span>
                   </div>
                 </div>
               )}
@@ -672,7 +672,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
               {/* Kvalitetsproblemer */}
               <h2 className={styles.sectionTitle}>Kvalitetsproblemer ({qualityIssues.length})</h2>
               {qualityIssues.length === 0 ? (
-                <p className={styles.noIssues}>Ingen kvalitetsproblemer funnet. Kjor database-improvements.sql for a aktivere views.</p>
+                <p className={styles.noIssues}>Ingen kvalitetsproblemer funnet. Kjør database-improvements.sql for å aktivere views.</p>
               ) : (
                 <div className={styles.issuesList}>
                   {qualityIssues.map(issue => (
@@ -699,7 +699,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
           {isLoadingAudit ? (
             <p className={styles.loading}>Laster endringslogg...</p>
           ) : auditLog.length === 0 ? (
-            <p className={styles.noResults}>Ingen endringer logget enna. Kjor database-improvements.sql for a aktivere logging.</p>
+            <p className={styles.noResults}>Ingen endringer logget ennå. Kjør database-improvements.sql for å aktivere logging.</p>
           ) : (
             <div className={styles.auditList}>
               {auditLog.map(entry => (

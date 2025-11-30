@@ -1,6 +1,6 @@
 import type { ToolType, PricingModel, Platform, IntelCyclePhase } from '@/types/database'
 
-// Verktoytyper
+// Verktøytyper
 export const TOOL_TYPES: { value: ToolType; label: string }[] = [
   { value: 'web', label: 'Nettside' },
   { value: 'terminal', label: 'Terminal' },
@@ -8,7 +8,7 @@ export const TOOL_TYPES: { value: ToolType; label: string }[] = [
   { value: 'mobile', label: 'Mobilapp' },
   { value: 'browser_extension', label: 'Utvidelse' },
   { value: 'api', label: 'API' },
-  { value: 'dork', label: 'Sokeoperator' },
+  { value: 'dork', label: 'Søkeoperator' },
   { value: 'database', label: 'Database' },
 ]
 

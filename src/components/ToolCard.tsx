@@ -22,7 +22,7 @@ export const ToolCard = memo(function ToolCard({ tool }: ToolCardProps) {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.link}
-            aria-label={`${tool.name} (apnes i nytt vindu)`}
+            aria-label={`${tool.name} (åpnes i nytt vindu)`}
           >
             {tool.name}
           </a>

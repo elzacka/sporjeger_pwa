@@ -16,7 +16,7 @@ export function useAuth() {
   })
 
   useEffect(() => {
-    // Hent navaerende sesjon
+    // Hent nåværende sesjon
     supabase.auth.getSession().then(({ data: { session } }) => {
       setState({
         user: session?.user ?? null,
@@ -25,7 +25,7 @@ export function useAuth() {
       })
     })
 
-    // Lytt pa auth-endringer
+    // Lytt på auth-endringer
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setState({
@@ -35,7 +35,7 @@ export function useAuth() {
         })
 
         // Redirect til admin etter vellykket innlogging
-        // (Supabase stripper hash-fragmenter, sa vi ma gjore det manuelt)
+        // (Supabase stripper hash-fragmenter, så vi må gjøre det manuelt)
         if (event === 'SIGNED_IN' && session) {
           const currentHash = window.location.hash
           if (!currentHash || currentHash === '#/' || currentHash === '#') {

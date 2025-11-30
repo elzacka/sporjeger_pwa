@@ -3,7 +3,7 @@ import Fuse, { type IFuseOptions, type FuseIndex } from 'fuse.js'
 import type { ToolWithCategories } from '@/types/database'
 import type { ParsedFilters } from './useFilters'
 
-// Fuse.js sokenokkler for indeks-bygging
+// Fuse.js søkenøkler for indeks-bygging
 const fuseKeys: string[] = ['name', 'description', 'category_names', 'url', 'regions']
 
 // Fuse.js konfigurasjon for fuzzy search
@@ -32,7 +32,7 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
   // Deferred value for smooth UI under skriving
   const deferredQuery = useDeferredValue(query)
 
-  // Cache for pre-bygd indeks - unnga rekonstruksjon ved samme antall verktoy
+  // Cache for pre-bygd indeks - unngå rekonstruksjon ved samme antall verktøy
   const indexCacheRef = useRef<{
     count: number
     index: FuseIndex<ToolWithCategories>
@@ -42,7 +42,7 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
   const fuse = useMemo(() => {
     if (tools.length === 0) return null
 
-    // Gjenbruk eksisterende indeks hvis antall verktoy er likt
+    // Gjenbruk eksisterende indeks hvis antall verktøy er likt
     let index: FuseIndex<ToolWithCategories>
     if (indexCacheRef.current && indexCacheRef.current.count === tools.length) {
       index = indexCacheRef.current.index

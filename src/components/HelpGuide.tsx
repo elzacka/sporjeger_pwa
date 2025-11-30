@@ -69,7 +69,7 @@ export function HelpGuide() {
                 <div className={styles.badgeList}>
                   <div className={styles.badgeItem}>
                     <span className={styles.badge} data-type="terminal">Terminal</span>
-                    <span>Kommandolinjeverktoy</span>
+                    <span>Kommandolinjeverktøy</span>
                   </div>
                   <div className={styles.badgeItem}>
                     <span className={styles.badge} data-type="registration">Registrering</span>

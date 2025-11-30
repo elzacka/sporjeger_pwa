@@ -11,7 +11,7 @@ import { AdminLogin } from '@/components/AdminLogin'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
 
-// Lazy load AdminPanel - lastes kun nar admin-rute besokes
+// Lazy load AdminPanel - lastes kun når admin-rute besøkes
 const AdminPanel = lazy(() => import('@/components/AdminPanel').then(m => ({ default: m.AdminPanel })))
 
 // Enkel hash-basert ruting
@@ -58,7 +58,7 @@ export default function App() {
 
   // Admin-rute med Supabase Auth
   if (route === '/admin') {
-    // Venter pa auth-sjekk
+    // Venter på auth-sjekk
     if (authLoading) {
       return (
         <main className={styles.main}>

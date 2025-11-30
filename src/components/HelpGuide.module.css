@@ -245,7 +245,7 @@
     max-height: 55dvh;
   }
 
-  /* Sikre at hjelp-knappen er synlig og trykkbar pa mobil */
+  /* Sikre at hjelp-knappen er synlig og trykkbar på mobil */
   .helpButton {
     padding: 8px;
     min-width: 32px;
