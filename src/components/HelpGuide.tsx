@@ -66,19 +66,24 @@ export function HelpGuide() {
 
               <section className={styles.section}>
                 <h3>Badges</h3>
-                <dl className={styles.badgeList}>
-                  <dt><span className={styles.badge} data-type="terminal">Terminal</span></dt>
-                  <dd>Kommandolinjeverktøy</dd>
-
-                  <dt><span className={styles.badge} data-type="registration">Registrering</span></dt>
-                  <dd>Krever at du oppretter konto</dd>
-
-                  <dt><span className={styles.badge} data-type="freemium">Gratish</span></dt>
-                  <dd>Gratis med betalte tilleggsfunksjoner</dd>
-
-                  <dt><span className={styles.badge} data-type="paid">Betalt</span></dt>
-                  <dd>Krever betaling for bruk</dd>
-                </dl>
+                <div className={styles.badgeList}>
+                  <div className={styles.badgeItem}>
+                    <span className={styles.badge} data-type="terminal">Terminal</span>
+                    <span>Kommandolinjeverktoy</span>
+                  </div>
+                  <div className={styles.badgeItem}>
+                    <span className={styles.badge} data-type="registration">Registrering</span>
+                    <span>Krever at du oppretter konto</span>
+                  </div>
+                  <div className={styles.badgeItem}>
+                    <span className={styles.badge} data-type="freemium">Gratish</span>
+                    <span>Gratis med betalte tilleggsfunksjoner</span>
+                  </div>
+                  <div className={styles.badgeItem}>
+                    <span className={styles.badge} data-type="paid">Betalt</span>
+                    <span>Krever betaling for bruk</span>
+                  </div>
+                </div>
               </section>
 
               <section className={styles.section}>
