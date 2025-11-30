@@ -22,6 +22,7 @@ export const PRICING_MODELS: { value: PricingModel; label: string }[] = [
 // Plattformer
 export const PLATFORMS: { value: Platform; label: string }[] = [
   { value: 'web', label: 'Web' },
+  { value: 'webapp', label: 'Webapp' },
   { value: 'windows', label: 'Windows' },
   { value: 'macos', label: 'macOS' },
   { value: 'linux', label: 'Linux' },

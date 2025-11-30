@@ -27,6 +27,7 @@ export type Platform =
   | 'android'
   | 'ios'
   | 'web'
+  | 'webapp'
 
 export interface Tool {
   id: string
