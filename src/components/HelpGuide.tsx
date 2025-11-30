@@ -11,7 +11,7 @@ export function HelpGuide() {
         className={styles.helpButton}
         onClick={() => setIsOpen(true)}
         aria-label="Vis veiledning"
-        title="Veiledning"
+        title="Sporjeger"
       >
         <svg
           width="16"

@@ -92,7 +92,7 @@
 }
 
 .ingress {
-  margin: 0 0 var(--space-xs);
+  margin: 0 0 var(--space-sm);
   font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--text-muted);

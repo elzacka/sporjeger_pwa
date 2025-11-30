@@ -50,10 +50,12 @@ export function useAuth() {
 
   // Logg inn med magic link
   const signInWithEmail = async (email: string) => {
+    // Ikke bruk hash i redirect URL - Supabase legger til egne hash-fragmenter
+    // SIGNED_IN event handler tar seg av redirect til #/admin
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}#/admin`
+        emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`
       }
     })
     return { error }
