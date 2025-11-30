@@ -449,7 +449,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
       const names = await caches.keys()
       await Promise.all(names.map(name => caches.delete(name)))
     }
-    window.location.href = '/'
+    window.location.href = import.meta.env.BASE_URL || '/'
   }
 
   // Formater dato
