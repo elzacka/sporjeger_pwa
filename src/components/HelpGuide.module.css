@@ -186,7 +186,7 @@
   font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 500;
-  color: var(--bg-primary);
+  color: #ffffff;
   border-radius: 2px;
   text-transform: uppercase;
   letter-spacing: 0.02em;
