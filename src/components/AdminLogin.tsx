@@ -7,10 +7,20 @@ interface AdminLoginProps {
 }
 
 export function AdminLogin({ onBack }: AdminLoginProps) {
-  const { signInWithEmail } = useAuth()
+  const { signInWithEmail, signInWithGitHub } = useAuth()
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+
+  const handleGitHubLogin = async () => {
+    setStatus('sending')
+    setErrorMessage('')
+    const { error } = await signInWithGitHub()
+    if (error) {
+      setStatus('error')
+      setErrorMessage(error.message)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -57,6 +67,20 @@ export function AdminLogin({ onBack }: AdminLoginProps) {
     <div className={styles.container}>
       <div className={styles.card}>
         <h1 className={styles.title}>Admin-innlogging</h1>
+
+        <button
+          type="button"
+          className={styles.githubButton}
+          onClick={handleGitHubLogin}
+          disabled={status === 'sending'}
+        >
+          Logg inn med GitHub
+        </button>
+
+        <div className={styles.divider}>
+          <span>eller</span>
+        </div>
+
         <p className={styles.subtitle}>
           Skriv inn e-postadressen din for a motta en innloggingslenke.
         </p>
@@ -71,7 +95,6 @@ export function AdminLogin({ onBack }: AdminLoginProps) {
               onChange={e => setEmail(e.target.value)}
               placeholder="din@epost.no"
               required
-              autoFocus
               disabled={status === 'sending'}
             />
           </label>

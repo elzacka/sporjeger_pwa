@@ -34,9 +34,11 @@ export function useAuth() {
           isLoading: false
         })
 
-        // Redirect til admin kun ved ny innlogging via magic link
-        // Sjekk at URL inneholder access_token (fra magic link)
-        if (event === 'SIGNED_IN' && session && window.location.href.includes('access_token')) {
+        // Redirect til admin ved innlogging (magic link eller OAuth)
+        // Magic link: URL inneholder access_token
+        // OAuth: URL inneholder code (fra Supabase callback)
+        const url = window.location.href
+        if (event === 'SIGNED_IN' && session && (url.includes('access_token') || url.includes('code='))) {
           window.location.hash = '#/admin'
         }
       }
@@ -58,6 +60,17 @@ export function useAuth() {
     return { error }
   }
 
+  // Logg inn med GitHub
+  const signInWithGitHub = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`
+      }
+    })
+    return { error }
+  }
+
   // Logg ut
   const signOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -70,6 +83,7 @@ export function useAuth() {
     isLoading: state.isLoading,
     isAuthenticated: !!state.user,
     signInWithEmail,
+    signInWithGitHub,
     signOut
   }
 }

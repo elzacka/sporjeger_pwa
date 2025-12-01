@@ -135,3 +135,46 @@
 .backLink:hover {
   color: var(--color-text);
 }
+
+.githubButton {
+  width: 100%;
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #24292e;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.githubButton:hover:not(:disabled) {
+  background-color: #3a4149;
+}
+
+.githubButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: var(--space-lg) 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-border);
+}
+
+.divider span {
+  padding: 0 var(--space-md);
+}
