@@ -300,10 +300,10 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
     .filter(t => {
       if (!tableFilter) return true
       const q = tableFilter.toLowerCase()
-      return t.name.toLowerCase().includes(q) ||
-        t.url.toLowerCase().includes(q) ||
-        t.description?.toLowerCase().includes(q) ||
-        t.category_names?.some(c => c.toLowerCase().includes(q))
+      return (t.name?.toLowerCase().includes(q)) ||
+        (t.url?.toLowerCase().includes(q)) ||
+        (t.description?.toLowerCase().includes(q)) ||
+        (Array.isArray(t.category_names) && t.category_names.some(c => c?.toLowerCase().includes(q)))
     })
     .sort((a, b) => {
       const aVal = String((a as unknown as Record<string, unknown>)[tableSortField] ?? '')
