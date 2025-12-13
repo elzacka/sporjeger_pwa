@@ -34,13 +34,12 @@ export function useAuth() {
           isLoading: false
         })
 
-        // Redirect til admin ved innlogging
-        // Sjekk om vi nettopp kom fra OAuth callback (URL params eller manglende hash)
+        // Redirect til admin kun ved fersk OAuth/magic link innlogging
+        // Sjekk om URL inneholder auth-parametere fra callback
         const url = window.location.href
         const hasAuthParams = url.includes('access_token') || url.includes('code=')
-        const isAtRoot = !window.location.hash || window.location.hash === '#/' || window.location.hash === ''
 
-        if (event === 'SIGNED_IN' && session && (hasAuthParams || isAtRoot)) {
+        if (event === 'SIGNED_IN' && session && hasAuthParams) {
           window.location.hash = '#/admin'
         }
       }
