@@ -21,11 +21,9 @@
 .markdown h3 {
   margin: var(--space-md) 0 var(--space-xs);
   font-family: var(--font-mono);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
 .markdown h4 {
