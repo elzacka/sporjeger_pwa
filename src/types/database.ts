@@ -47,6 +47,7 @@ export interface Tool {
   verified_by: string | null
   quality_score: number | null
   updated_at: string
+  guide: string | null
 }
 
 export interface Category {

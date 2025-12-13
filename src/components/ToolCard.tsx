@@ -1,6 +1,7 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import type { ToolWithCategories } from '@/types/database'
 import { t } from '@/lib/i18n'
+import { Markdown } from './Markdown'
 import styles from './ToolCard.module.css'
 
 interface ToolCardProps {
@@ -8,10 +9,14 @@ interface ToolCardProps {
 }
 
 export const ToolCard = memo(function ToolCard({ tool }: ToolCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false)
+
   // Ekstraher domene fra URL for visning
   const displayUrl = (tool.url ?? '')
     .replace(/^https?:\/\//, '')
     .replace(/\/$/, '')
+
+  const hasGuide = tool.guide && tool.guide.trim().length > 0
 
   return (
     <article className={styles.card}>
@@ -71,6 +76,32 @@ export const ToolCard = memo(function ToolCard({ tool }: ToolCardProps) {
           </span>
         )}
       </div>
+
+      {hasGuide && (
+        <>
+          <button
+            type="button"
+            className={styles.expandButton}
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-expanded={isExpanded}
+            aria-controls={`guide-${tool.id}`}
+          >
+            <span className={styles.expandIcon} data-expanded={isExpanded}>
+              {isExpanded ? '▾' : '▸'}
+            </span>
+            {isExpanded ? 'Skjul' : 'Vis mer'}
+          </button>
+
+          {isExpanded && (
+            <div
+              id={`guide-${tool.id}`}
+              className={styles.guide}
+            >
+              <Markdown content={tool.guide!} />
+            </div>
+          )}
+        </>
+      )}
     </article>
   )
 })

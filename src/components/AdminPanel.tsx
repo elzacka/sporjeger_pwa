@@ -19,6 +19,7 @@ interface ToolRow {
   regions: string[]
   is_active: boolean
   last_verified: string | null
+  guide: string | null
 }
 
 interface CategoryRow {
@@ -69,6 +70,7 @@ const MAX_NAME_LENGTH = 200
 const MAX_DESCRIPTION_LENGTH = 2000
 const MAX_URL_LENGTH = 500
 const MAX_SLUG_LENGTH = 100
+const MAX_GUIDE_LENGTH = 10000
 
 interface AdminPanelProps {
   onSignOut?: () => Promise<{ error: Error | null }>
@@ -334,7 +336,7 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
       if (table === 'tools') {
         const { data, error } = await supabase
           .from('tools')
-          .select('id, name, slug, description, url, tool_type, requires_registration, requires_manual_url, pricing_model, platforms, intel_cycle_phases, regions, is_active, last_verified')
+          .select('id, name, slug, description, url, tool_type, requires_registration, requires_manual_url, pricing_model, platforms, intel_cycle_phases, regions, is_active, last_verified, guide')
           .or(`name.ilike.%${sanitizedQuery}%,description.ilike.%${sanitizedQuery}%`)
           .order('name')
           .limit(50)
@@ -725,6 +727,21 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
                               value={editData.last_verified ? String(editData.last_verified).split('T')[0] : ''}
                               onChange={e => updateField('last_verified', e.target.value || null)}
                             />
+                          </label>
+
+                          <label className={styles.editLabel}>
+                            Tilleggsinfo (Markdown):
+                            <textarea
+                              className={styles.guideTextarea}
+                              value={String(editData.guide ?? '')}
+                              onChange={e => updateField('guide', e.target.value.slice(0, MAX_GUIDE_LENGTH) || null)}
+                              maxLength={MAX_GUIDE_LENGTH}
+                              rows={8}
+                              placeholder="## Kom i gang&#10;1. Last ned verktøyet&#10;2. Opprett konto&#10;&#10;**Tips:** Bruk *kursiv* for vektlegging.&#10;&#10;[Lenke til dokumentasjon](https://example.com)"
+                            />
+                            <span className={styles.charCount}>
+                              {(editData.guide as string)?.length ?? 0} / {MAX_GUIDE_LENGTH}
+                            </span>
                           </label>
                         </>
                       )}
