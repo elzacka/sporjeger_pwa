@@ -12,6 +12,7 @@ ALTER TABLE tools ADD COLUMN IF NOT EXISTS guide TEXT;
 COMMENT ON COLUMN tools.guide IS 'Markdown-formatert tilleggsinfo/veiledning for verktøyet';
 
 -- 3. Oppdater tools_with_categories view for å inkludere guide
+-- Fjerner verified_by og quality_score som ikke finnes i databasen
 CREATE OR REPLACE VIEW tools_with_categories AS
 SELECT
   t.id,
@@ -28,8 +29,6 @@ SELECT
   t.regions,
   t.is_active,
   t.last_verified,
-  t.verified_by,
-  t.quality_score,
   t.updated_at,
   t.guide,
   COALESCE(

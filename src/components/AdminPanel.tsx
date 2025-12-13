@@ -451,7 +451,8 @@ export function AdminPanel({ onSignOut }: AdminPanelProps) {
       const names = await caches.keys()
       await Promise.all(names.map(name => caches.delete(name)))
     }
-    window.location.href = import.meta.env.BASE_URL || '/'
+    // Behold admin-panel etter refresh
+    window.location.href = (import.meta.env.BASE_URL || '/') + '#/admin'
   }
 
   // Formater dato
