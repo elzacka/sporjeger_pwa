@@ -34,11 +34,13 @@ export function useAuth() {
           isLoading: false
         })
 
-        // Redirect til admin ved innlogging (magic link eller OAuth)
-        // Magic link: URL inneholder access_token
-        // OAuth: URL inneholder code (fra Supabase callback)
+        // Redirect til admin ved innlogging
+        // Sjekk om vi nettopp kom fra OAuth callback (URL params eller manglende hash)
         const url = window.location.href
-        if (event === 'SIGNED_IN' && session && (url.includes('access_token') || url.includes('code='))) {
+        const hasAuthParams = url.includes('access_token') || url.includes('code=')
+        const isAtRoot = !window.location.hash || window.location.hash === '#/' || window.location.hash === ''
+
+        if (event === 'SIGNED_IN' && session && (hasAuthParams || isAtRoot)) {
           window.location.hash = '#/admin'
         }
       }
