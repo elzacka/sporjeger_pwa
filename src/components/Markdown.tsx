@@ -6,11 +6,19 @@ interface MarkdownProps {
 }
 
 // Enkel markdown-parser uten eksterne avhengigheter
-// Støtter: headers, bold, italic, links, lists, paragraphs
+// Støtter: headers, bold, italic, links, lists, paragraphs, escaped chars
 function parseMarkdown(markdown: string): string {
   if (!markdown) return ''
 
+  // Placeholder for escaped characters (må gjøres før alt annet)
+  const ESCAPED_ASTERISK = '\u0000ASTERISK\u0000'
+  const ESCAPED_BACKSLASH = '\u0000BACKSLASH\u0000'
+
   let html = markdown
+    // Håndter escaped backslash først
+    .replace(/\\\\/g, ESCAPED_BACKSLASH)
+    // Håndter escaped asterisk
+    .replace(/\\\*/g, ESCAPED_ASTERISK)
     // Escape HTML for sikkerhet
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -25,6 +33,10 @@ function parseMarkdown(markdown: string): string {
   html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
+
+  // Gjenopprett escaped characters
+  html = html.replace(new RegExp(ESCAPED_ASTERISK, 'g'), '*')
+  html = html.replace(new RegExp(ESCAPED_BACKSLASH, 'g'), '\\')
 
   // Links: [text](url)
   html = html.replace(
