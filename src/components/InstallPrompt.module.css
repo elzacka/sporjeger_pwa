@@ -1,0 +1,88 @@
+.prompt {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--space-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  max-width: 260px;
+  animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: var(--space-xs);
+  color: var(--text-primary);
+}
+
+.description {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.installBtn,
+.dismissBtn {
+  flex: 1;
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.installBtn {
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+}
+
+.installBtn:hover {
+  background: var(--text-secondary);
+}
+
+.dismissBtn {
+  background: none;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.dismissBtn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+/* Mobil - litt mer plass */
+@media (max-width: 600px) {
+  .prompt {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: 12px;
+    left: 12px;
+    max-width: none;
+  }
+}

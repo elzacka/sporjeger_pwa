@@ -7,6 +7,7 @@ import { CommandSearch } from '@/components/CommandSearch'
 import { ToolList } from '@/components/ToolList'
 import { HelpGuide } from '@/components/HelpGuide'
 import { DorksGuide } from '@/components/DorksGuide'
+import { InstallPrompt } from '@/components/InstallPrompt'
 import { AdminLogin } from '@/components/AdminLogin'
 import { t } from '@/lib/i18n'
 import styles from './App.module.css'
@@ -128,6 +129,8 @@ export default function App() {
         <DorksGuide />
         <HelpGuide />
       </footer>
+
+      <InstallPrompt />
     </div>
   )
 }

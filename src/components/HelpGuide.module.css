@@ -16,81 +16,7 @@
   color: var(--text-primary);
 }
 
-/* Overlay */
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: var(--space-lg);
-  padding-top: env(safe-area-inset-top, var(--space-lg));
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
-}
-
-/* Modal */
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 480px;
-  margin: var(--space-lg) 0;
-  padding: 0;
-  overflow: hidden;
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid var(--border-light);
-}
-
-.title {
-  margin: 0;
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.closeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-.closeButton:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
-}
-
 /* Innhold */
-.content {
-  padding: var(--space-lg);
-  overflow-y: auto;
-  max-height: 60vh;
-  max-height: 60dvh;
-  text-align: left;
-}
-
 .ingress {
   margin: 0 0 var(--space-sm);
   font-size: 0.9375rem;
@@ -233,22 +159,6 @@
 
 /* Responsiv */
 @media (max-width: 600px) {
-  .overlay {
-    padding: var(--space-sm);
-    padding-top: calc(env(safe-area-inset-top, 0px) + var(--space-sm));
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-sm));
-  }
-
-  .modal {
-    margin: var(--space-sm) 0;
-  }
-
-  .content {
-    max-height: 55vh;
-    max-height: 55dvh;
-  }
-
-  /* Sikre at hjelp-knappen er synlig og trykkbar på mobil */
   .helpButton {
     padding: 8px;
     min-width: 32px;
