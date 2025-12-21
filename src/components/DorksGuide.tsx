@@ -66,7 +66,7 @@ export function DorksGuide() {
 
                   <dt><code>site:</code></dt>
                   <dd>Begge ordene må finnes på samme side, kun .no-domener</dd>
-                  <dd className={styles.example}>site:.no ("Storybook" OR "storybook") "designsystem"l</dd>
+                  <dd className={styles.example}>site:.no ("Storybook" OR "storybook") "designsystem"</dd>
 
                   <dt><code>filetype:</code></dt>
                   <dd>Finn spesifikke filtyper</dd>
