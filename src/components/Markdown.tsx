@@ -6,7 +6,8 @@ interface MarkdownProps {
 }
 
 // Enkel markdown-parser uten eksterne avhengigheter
-// Støtter: headers, bold, italic, links, lists, paragraphs, escaped chars
+// Støtter: headers, bold, italic, links, lists, paragraphs, escaped chars,
+// fenced code blocks, bare URL autolinks
 function parseMarkdown(markdown: string): string {
   if (!markdown) return ''
 
@@ -14,7 +15,22 @@ function parseMarkdown(markdown: string): string {
   const ESCAPED_ASTERISK = '\u0000ASTERISK\u0000'
   const ESCAPED_BACKSLASH = '\u0000BACKSLASH\u0000'
 
-  let html = markdown
+  // Ekstraher fenced code blocks før HTML-escaping
+  const codeBlocks: string[] = []
+  const CODE_PLACEHOLDER = '\u0000CODEBLOCK'
+  let processed = markdown.replace(
+    /```(\w*)\n([\s\S]*?)```/g,
+    (_match, _lang: string, code: string) => {
+      const escaped = code
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+      codeBlocks.push(`<pre><code>${escaped.trimEnd()}</code></pre>`)
+      return `${CODE_PLACEHOLDER}${codeBlocks.length - 1}\u0000`
+    }
+  )
+
+  let html = processed
     // Håndter escaped backslash først
     .replace(/\\\\/g, ESCAPED_BACKSLASH)
     // Håndter escaped asterisk
@@ -42,6 +58,17 @@ function parseMarkdown(markdown: string): string {
   html = html.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  )
+
+  // Bare URL autolinks: https://... som ikke allerede er i href="..." eller (...)
+  html = html.replace(
+    /(?<!href="|href='|\()https?:\/\/[^\s<>"')\]]+/g,
+    url => {
+      // Fjern avsluttende tegnsetting
+      const cleaned = url.replace(/[.,;:!?)]+$/, '')
+      const trailing = url.slice(cleaned.length)
+      return `<a href="${cleaned}" target="_blank" rel="noopener noreferrer">${cleaned}</a>${trailing}`
+    }
   )
 
   // Inline code: `code`
@@ -112,7 +139,15 @@ function parseMarkdown(markdown: string): string {
     result.push('</p>')
   }
 
-  return result.join('\n')
+  let output = result.join('\n')
+
+  // Gjenopprett fenced code blocks
+  output = output.replace(
+    new RegExp(`${CODE_PLACEHOLDER}(\\d+)\u0000`, 'g'),
+    (_match, index: string) => codeBlocks[parseInt(index)]
+  )
+
+  return output
 }
 
 export const Markdown = memo(function Markdown({ content }: MarkdownProps) {

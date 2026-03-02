@@ -57,6 +57,14 @@ export const ToolCard = memo(function ToolCard({ tool }: ToolCardProps) {
               {tool.pricing_model === 'freemium' ? 'Gratish' : 'Betalt'}
             </span>
           )}
+          {tool.caution_level === 1 && (
+            <span
+              className={styles.caution}
+              title="Dette verktøyet krever ekstra bevissthet om rettslig grunnlag og etikk."
+            >
+              !
+            </span>
+          )}
         </div>
       </div>
 

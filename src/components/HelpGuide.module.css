@@ -16,6 +16,26 @@
   color: var(--text-primary);
 }
 
+/* Ansvarsfraskrivelse */
+.disclaimer {
+  margin: 0 0 var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  border-left: 3px solid #f5a623;
+  border-radius: 2px;
+}
+
+.disclaimer p {
+  margin: 0;
+}
+
+.disclaimer p + p {
+  margin-top: var(--space-xs);
+}
+
 /* Innhold */
 .ingress {
   margin: 0 0 var(--space-sm);
@@ -135,6 +155,12 @@
 
 .badgePaid {
   background: var(--badge-paid) !important;
+}
+
+.badgeCaution {
+  background: #f5a623 !important;
+  color: #7a5200 !important;
+  font-weight: 700;
 }
 
 /* Installasjons-liste */

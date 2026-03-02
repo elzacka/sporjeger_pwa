@@ -1,6 +1,6 @@
 # Sporjeger
 
-Norsk OSINT-verktøykatalog med over 1000 verktøy. Minimalistisk PWA bygget med React 19.2 og Supabase.
+Norsk OSINT-verktøykatalog med over 300 verktøy. Minimalistisk PWA bygget med React 19.2 og Supabase.
 
 **Live:** https://elzacka.github.io/sporjeger_pwa/
 
@@ -46,7 +46,7 @@ npm run preview  # Forhåndsvis bygg
 
 ```
 src/
-├── components/     # React-komponenter (BottomSheet, ToolCard, etc.)
+├── components/     # React-komponenter (BottomSheet, ToolCard, Markdown, etc.)
 ├── hooks/          # Custom hooks (useTools, useSearch, useFilters)
 ├── lib/            # Supabase-klient, i18n
 ├── styles/         # Global CSS
@@ -62,4 +62,5 @@ src/
 - Google Dorks-guide og veiledning (bottom sheets)
 - PWA-installasjons-prompt
 - Admin-panel for redigering (`#/admin`)
-- Markdown-baserte verktøy-guider
+- Markdown-baserte verktøyguider med kodeblokker og klikkbare URL-er
+- Varselsindikator for verktøy som krever ekstra bevissthet om rettslig grunnlag

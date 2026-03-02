@@ -72,6 +72,21 @@
   background: var(--badge-paid);
 }
 
+.caution {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #7a5200;
+  background: #f5a623;
+  border-radius: 2px;
+  cursor: help;
+}
+
 .description {
   margin: var(--space-xs) 0 0;
   font-size: 0.9375rem;
@@ -128,6 +143,8 @@
   background: var(--bg-secondary);
   border-radius: 4px;
   border-left: 3px solid var(--border);
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Responsiv */

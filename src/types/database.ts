@@ -48,6 +48,7 @@ export interface Tool {
   quality_score: number | null
   updated_at: string
   guide: string | null
+  caution_level: number
 }
 
 export interface Category {

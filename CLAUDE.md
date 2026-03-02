@@ -46,8 +46,9 @@ Scripts in `scripts/` are run with `npx tsx scripts/<name>.ts`. Example: `npx ts
 
 - **BottomSheet**: Reusable slide-up modal for guides/dialogs (used by DorksGuide, HelpGuide)
 - **InstallPrompt**: PWA install prompt shown when `beforeinstallprompt` event fires
-- **Markdown**: Lightweight Markdown renderer for tool guides (supports headers, bold, italic, links, lists, code)
-- **ToolCard**: Expandable card with "Vis mer" for tools with guides
+- **Markdown**: Lightweight Markdown renderer for tool guides (supports headers, bold, italic, links, bare URL autolinks, lists, inline code, fenced code blocks, escaped characters)
+- **ToolCard**: Expandable card with "Vis mer" for tools with guides. Shows caution indicator for tools with `caution_level === 1`
+- **HelpGuide**: Veiledning bottom sheet with disclaimer about responsible OSINT use, badge explanations, and install instructions
 
 ### Database Types
 
@@ -57,15 +58,16 @@ Defined in `src/types/database.ts`:
 - `IntelCyclePhase`: planning, collection, processing, analysis, dissemination
 - `Platform`: windows, macos, linux, android, ios, web, webapp
 - `guide`: Optional Markdown field for additional info/user guides per tool
+- `caution_level`: Numeric field (default 0). Tools with `caution_level === 1` show an amber indicator on ToolCard
 
 ### Tool Guides (Markdown)
 
 Tools can have a `guide` field containing Markdown-formatted additional info. The `Markdown` component (`src/components/Markdown.tsx`) renders it with support for:
 - Headers (`#`, `##`, `###`)
 - Bold (`**text**`), italic (`*text*`)
-- Links (`[text](url)`)
+- Links (`[text](url)`) and bare URL autolinks (`https://...`)
 - Bullet lists (`- item`) and numbered lists (`1. item`)
-- Inline code (`` `code` ``)
+- Inline code (`` `code` ``) and fenced code blocks (`` ```lang ... ``` ``)
 - Escaped characters (`\*` for literal asterisk)
 
 In ToolCard, guides are shown via an expandable "Vis mer" button. Edit guides in AdminPanel under "Tilleggsinfo (Markdown)".

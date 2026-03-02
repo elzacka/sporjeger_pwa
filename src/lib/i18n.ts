@@ -65,7 +65,8 @@ export const t = {
     'satellite-imagery': 'Satellittbilder',
     'street-view': 'Gatebilder',
     'training': 'Opplæring',
-    'documentation': 'Dokumentasjon'
+    'documentation': 'Dokumentasjon',
+    'network-infrastructure': 'Nettverk og infrastruktur'
   },
 
   // UI-tekster

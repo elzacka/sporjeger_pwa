@@ -30,8 +30,13 @@ export function HelpGuide() {
       </button>
 
       <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} title="Veiledning">
+        <aside className={styles.disclaimer}>
+          <p>Sporjeger gir oversikt over OSINT-verktøy. Du er selv ansvarlig for lovlig og etisk bruk.</p>
+          <p><strong>Offentlig tilgjengelig betyr ikke fritt frem.</strong></p>
+        </aside>
+
         <p className={styles.ingress}>
-          Katalog med over 1000 OSINT-verktøy for research i åpne kilder.
+          Katalog med over 300 OSINT-verktøy for research i åpne kilder.
         </p>
         <p className={styles.footnote}>OSINT = Open Source Intelligence</p>
 
@@ -63,6 +68,10 @@ export function HelpGuide() {
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgePaid}`}>Betalt</span>
               <span>Krever betaling for bruk</span>
+            </div>
+            <div className={styles.badgeItem}>
+              <span className={`${styles.badge} ${styles.badgeCaution}`}>!</span>
+              <span>Krever ekstra bevissthet om rettslig grunnlag og etikk</span>
             </div>
           </div>
         </section>
