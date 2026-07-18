@@ -152,30 +152,30 @@
   font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--bg-primary);
   border-radius: 2px;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   flex-shrink: 0;
 }
 
-.tagTerminal {
+.tag[data-type="terminal"] {
   background: var(--badge-terminal);
 }
 
-.tagRegistration {
+.tag[data-type="registration"] {
   background: var(--badge-registration);
 }
 
-.tagFreemium {
+.tag[data-type="freemium"] {
   background: var(--badge-freemium);
 }
 
-.tagPaid {
+.tag[data-type="paid"] {
   background: var(--badge-paid);
 }
 
-.tagCaution {
+.tag[data-type="caution"] {
   background: #f5a623;
   color: #7a5200;
   font-weight: 700;

@@ -54,23 +54,23 @@ export function HelpGuide() {
           <h3>Etiketter på verktøyene</h3>
           <div className={styles.tagList}>
             <div className={styles.tagItem}>
-              <span className={`${styles.tag} ${styles.tagTerminal}`}>Terminal</span>
+              <span className={styles.tag} data-type="terminal">Terminal</span>
               <span>Kjøres via kommandolinjen</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={`${styles.tag} ${styles.tagRegistration}`}>Registrering</span>
+              <span className={styles.tag} data-type="registration">Registrering</span>
               <span>Krever at du lager en konto</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={`${styles.tag} ${styles.tagFreemium}`}>Gratish</span>
+              <span className={styles.tag} data-type="freemium">Gratish</span>
               <span>Gratis, med betalte tillegg</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={`${styles.tag} ${styles.tagPaid}`}>Betalt</span>
+              <span className={styles.tag} data-type="paid">Betalt</span>
               <span>Koster penger å bruke</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={`${styles.tag} ${styles.tagCaution}`}>!</span>
+              <span className={styles.tag} data-type="caution">!</span>
               <span>Krever ekstra varsomhet rundt lov og etikk</span>
             </div>
           </div>
