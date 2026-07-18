@@ -26,10 +26,10 @@ Databasen i Supabase vedlikeholdes automatisk:
 
 ## Teknologi
 
-- React 19.2 + TypeScript 5.9
-- Vite 7.3 + vite-plugin-pwa 1.2
-- Supabase (database, kun lesetilgang)
-- Fuse.js 7.1 (fuzzy-søk)
+- React 19.2 + TypeScript 7.0
+- Vite 8.1 + vite-plugin-pwa 1.3
+- Supabase JS 2.110 (database, kun lesetilgang)
+- Fuse.js 7.5 (fuzzy-søk)
 - Fonter og ikoner ligger lokalt (ingen eksterne CDN-er)
 
 ## Oppsett
@@ -49,7 +49,6 @@ VITE_SUPABASE_ANON_KEY=din-anon-key
 npm run dev      # Utviklingsserver på http://localhost:5174/sporjeger_pwa/
 npm run build    # Typesjekk + produksjonsbygg i dist/
 npm run preview  # Forhåndsvis produksjonsbygg
-npm run lint     # ESLint
 ```
 
 ## Publisering

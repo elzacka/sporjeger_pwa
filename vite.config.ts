@@ -7,10 +7,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'supabase': ['@supabase/supabase-js'],
-          'fuse': ['fuse.js']
+        manualChunks: (id) => {
+          if (id.includes('/react/') || id.includes('/react-dom/')) return 'react-vendor'
+          if (id.includes('/@supabase/')) return 'supabase'
+          if (id.includes('/fuse.js/')) return 'fuse'
         }
       }
     }

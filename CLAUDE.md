@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Sporjeger is a Norwegian OSINT tool catalog PWA. The UI is in Norwegian, while database values are English. The app is a pure read-only client: no auth, no writes. All catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key.
 
-**Current version: 2.1.1** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
+**Current version: 2.1.2** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
 
 Setup, commands, structure, and deploy are documented in `README.md` — do not duplicate them here.
 
@@ -17,6 +17,7 @@ Setup, commands, structure, and deploy are documented in `README.md` — do not 
 - Fonts and icons are self-hosted (`@fontsource/*` imported in `main.tsx`, SVG icons inline) — never add external CDN resources; the meta-CSP in `index.html` will block them
 - Commit format: `type: description` (feat/fix/docs/refactor/test), no emoji
 - Always test in the local dev server and let the user verify before committing
+- No ESLint — `typescript-eslint` does not yet support TypeScript 7. Type safety and unused-variable checks are enforced by `tsc -b` (strict mode, `noUnusedLocals`, `noUnusedParameters`). Run `npm run build` before marking any task complete; there is no separate `npm run lint`.
 
 ## Architecture
 
