@@ -11,7 +11,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Appen er ren leseklient - ingen auth-sesjon skal persisteres
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false
+  }
+})
 
 // Parser intel_cycle_phases fra PostgreSQL array-streng til JS array
 function parsePostgresArray(value: string | string[] | null): string[] {
@@ -41,8 +47,10 @@ export async function getTools(): Promise<ToolWithCategories[]> {
       .range(offset, offset + batchSize - 1)
 
     if (error) {
+      // Kast videre slik at useTools kan falle tilbake til cache og vise feilmelding.
+      // Å returnere en delvis liste ville blitt cachet som komplett katalog.
       console.error('Feil ved henting av verktøy:', error)
-      break
+      throw new Error(`Kunne ikke hente verktøy: ${error.message}`)
     }
 
     if (data && data.length > 0) {

@@ -3,8 +3,11 @@ import type { ToolWithCategories, CategoryWithCount } from '@/types/database'
 import { getTools, getCategories } from '@/lib/supabase'
 
 // Cache-nøkler for localStorage
-const CACHE_KEY_TOOLS = 'sporjeger_tools_cache'
-const CACHE_KEY_CATEGORIES = 'sporjeger_categories_cache'
+// Bump CACHE_VERSION ved skjemaendringer i databasen/typene,
+// slik at brukere ikke får utdatert datastruktur i opptil 1 time
+const CACHE_VERSION = 2
+const CACHE_KEY_TOOLS = `sporjeger_tools_cache_v${CACHE_VERSION}`
+const CACHE_KEY_CATEGORIES = `sporjeger_categories_cache_v${CACHE_VERSION}`
 const CACHE_TTL = 1000 * 60 * 60 // 1 time
 
 interface CacheEntry<T> {
@@ -18,6 +21,11 @@ function getFromCache<T>(key: string): T | null {
     if (!cached) return null
 
     const entry: CacheEntry<T> = JSON.parse(cached)
+    if (typeof entry?.timestamp !== 'number' || !Array.isArray(entry?.data)) {
+      // Korrupt eller uventet form - forkast
+      localStorage.removeItem(key)
+      return null
+    }
     if (Date.now() - entry.timestamp > CACHE_TTL) {
       localStorage.removeItem(key)
       return null
@@ -26,6 +34,25 @@ function getFromCache<T>(key: string): T | null {
     return entry.data
   } catch {
     return null
+  }
+}
+
+// Rydd bort cache fra tidligere versjoner
+function pruneOldCaches(): void {
+  try {
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i)
+      if (
+        key &&
+        (key.startsWith('sporjeger_tools_cache') || key.startsWith('sporjeger_categories_cache')) &&
+        key !== CACHE_KEY_TOOLS &&
+        key !== CACHE_KEY_CATEGORIES
+      ) {
+        localStorage.removeItem(key)
+      }
+    }
+  } catch {
+    // Ignorer feil
   }
 }
 
@@ -119,6 +146,7 @@ export function useTools() {
   }, [])
 
   useEffect(() => {
+    pruneOldCaches()
     loadData()
   }, [loadData])
 

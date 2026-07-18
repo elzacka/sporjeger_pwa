@@ -31,3 +31,6 @@ dev_only/
 
 # PWA generated
 dev-dist/
+
+# TypeScript build info
+tsconfig.tsbuildinfo

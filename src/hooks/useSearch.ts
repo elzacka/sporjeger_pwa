@@ -104,7 +104,8 @@ export function useSearch({ tools, query, filters, hasActiveFilters }: UseSearch
 
     // Hvis vi har en søkestreng, bruk fuzzy search
     if (deferredQuery.trim() && fuse) {
-      const searchResults = fuse.search(deferredQuery, { limit: 50 })
+      // Ingen limit - katalogen er liten nok til at full trefflistetelling er korrekt
+      const searchResults = fuse.search(deferredQuery)
 
       // Hvis vi har filtre, filtrer fuzzy-resultater
       if (hasActiveFilters) {

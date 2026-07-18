@@ -41,7 +41,7 @@ export class ErrorBoundary extends Component<Props, State> {
         }}>
           <h1 style={{ marginBottom: '1rem' }}>Noe gikk galt</h1>
           <p style={{ marginBottom: '1.5rem', color: '#666' }}>
-            En uventet feil oppstod. Prov a laste siden pa nytt.
+            En uventet feil oppstod. Prøv å laste siden på nytt.
           </p>
           <button
             onClick={() => window.location.reload()}
@@ -56,7 +56,7 @@ export class ErrorBoundary extends Component<Props, State> {
               fontFamily: '"DM Mono", monospace'
             }}
           >
-            Last siden pa nytt
+            Last siden på nytt
           </button>
         </div>
       )

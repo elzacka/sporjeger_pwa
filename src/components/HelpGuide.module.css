@@ -3,17 +3,44 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  gap: 6px;
+  min-height: 44px;
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
   color: var(--text-muted);
   background: none;
   border: none;
-  border-radius: 2px;
+  border-radius: 4px;
   cursor: pointer;
   transition: color 0.15s ease;
 }
 
+/* Ikon justert optisk mot teksten */
+.helpButton svg {
+  width: 14px;
+  height: 14px;
+}
+
 .helpButton:hover {
   color: var(--text-primary);
+}
+
+.helpButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Tekstetikett kun på desktop - ikonet alene er for diskret */
+.helpLabel {
+  display: none;
+}
+
+@media (min-width: 601px) {
+  .helpLabel {
+    display: inline;
+  }
 }
 
 /* Ansvarsfraskrivelse */
@@ -38,20 +65,12 @@
 
 /* Innhold */
 .ingress {
-  margin: 0 0 var(--space-sm);
+  margin: 0 0 var(--space-md);
   font-size: 0.9375rem;
   line-height: 1.5;
-  color: var(--text-muted);
+  color: var(--text-secondary);
 }
 
-.footnote {
-  margin: 0 0 var(--space-lg);
-  font-size: 0.8125rem;
-  font-style: italic;
-  font-weight: 400;
-  color: var(--text-muted);
-  opacity: 0.8;
-}
 
 .section {
   margin-bottom: var(--space-lg);
@@ -124,8 +143,7 @@
 }
 
 .badge {
-  display: inline-flex !important;
-  visibility: visible !important;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 85px;
@@ -142,24 +160,24 @@
 }
 
 .badgeTerminal {
-  background: var(--badge-terminal) !important;
+  background: var(--badge-terminal);
 }
 
 .badgeRegistration {
-  background: var(--badge-registration) !important;
+  background: var(--badge-registration);
 }
 
 .badgeFreemium {
-  background: var(--badge-freemium) !important;
+  background: var(--badge-freemium);
 }
 
 .badgePaid {
-  background: var(--badge-paid) !important;
+  background: var(--badge-paid);
 }
 
 .badgeCaution {
-  background: #f5a623 !important;
-  color: #7a5200 !important;
+  background: #f5a623;
+  color: #7a5200;
   font-weight: 700;
 }
 
@@ -186,9 +204,9 @@
 /* Responsiv */
 @media (max-width: 600px) {
   .helpButton {
+    min-width: 44px;
+    min-height: 44px;
     padding: 8px;
-    min-width: 32px;
-    min-height: 32px;
   }
 
   .helpButton svg {

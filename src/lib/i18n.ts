@@ -84,9 +84,6 @@ export const t = {
     footer: 'Sporjeger - OSINT-katalog for digital skattejakt',
     loading: 'Laster...',
     offline: 'Du er frakoblet. Viser bufret data.',
-    refreshing: 'Oppdaterer...',
-    refresh: 'Oppdater',
-    refreshTitle: 'Tøm cache og hent oppdatert data fra Supabase',
 
     // Filter-grupper
     filterByCategory: 'Kategori',
@@ -112,5 +109,5 @@ export function translate<T extends keyof typeof t>(
   category: T,
   key: keyof (typeof t)[T]
 ): string {
-  return (t[category] as Record<string, string>)[key as string] ?? key
+  return (t[category] as Record<string, string>)[key as string] ?? String(key)
 }

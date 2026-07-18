@@ -12,7 +12,6 @@ export function HelpGuide() {
         className={styles.helpButton}
         onClick={() => setIsOpen(true)}
         aria-label="Vis veiledning"
-        title="Sporjeger"
       >
         <svg
           width="16"
@@ -23,55 +22,56 @@ export function HelpGuide() {
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
+          aria-hidden="true"
         >
           <path d="M2 2h12v12H2z" />
           <path d="M5 5h6M5 8h6M5 11h4" />
         </svg>
+        <span className={styles.helpLabel}>Veiledning</span>
       </button>
 
       <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} title="Veiledning">
-        <aside className={styles.disclaimer}>
-          <p>Sporjeger gir oversikt over OSINT-verktøy. Du er selv ansvarlig for lovlig og etisk bruk.</p>
-          <p><strong>Offentlig tilgjengelig betyr ikke fritt frem.</strong></p>
-        </aside>
-
         <p className={styles.ingress}>
-          Katalog med over 300 OSINT-verktøy for research i åpne kilder.
+          Sporjeger samler verktøy for å finne informasjon i åpne kilder – kalt OSINT (Open Source Intelligence).
         </p>
-        <p className={styles.footnote}>OSINT = Open Source Intelligence</p>
+
+        <aside className={styles.disclaimer}>
+          <p>Du er selv ansvarlig for lovlig og etisk bruk.</p>
+          <p>At noe er offentlig, betyr ikke at det er fritt frem.</p>
+        </aside>
 
         <section className={styles.section}>
           <h3>Slik søker du</h3>
           <ul>
-            <li>Trykk <kbd>Ctrl</kbd>+<kbd>K</kbd> eller klikk i søkefelt for å starte søk</li>
-            <li>Klikk på en kategori-knapp for å filtrere</li>
-            <li>Kombiner søk og filtre for finne akkurat det verktøyet du trenger</li>
+            <li>Klikk i søkefeltet, eller trykk <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>Cmd</kbd>+<kbd>K</kbd> på Mac)</li>
+            <li>Velg en kategori for å filtrere</li>
+            <li>Kombiner søk og filtre for å snevre inn</li>
             <li>Trykk <kbd>Esc</kbd> for å nullstille</li>
           </ul>
         </section>
 
         <section className={styles.section}>
-          <h3>Badges</h3>
+          <h3>Merker på verktøyene</h3>
           <div className={styles.badgeList}>
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgeTerminal}`}>Terminal</span>
-              <span>Kommandolinjeverktøy</span>
+              <span>Kjøres via kommandolinjen</span>
             </div>
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgeRegistration}`}>Registrering</span>
-              <span>Krever at du oppretter konto</span>
+              <span>Krever at du lager en konto</span>
             </div>
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgeFreemium}`}>Gratish</span>
-              <span>Gratis med betalte tilleggsfunksjoner</span>
+              <span>Gratis, med betalte tillegg</span>
             </div>
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgePaid}`}>Betalt</span>
-              <span>Krever betaling for bruk</span>
+              <span>Koster penger å bruke</span>
             </div>
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgeCaution}`}>!</span>
-              <span>Krever ekstra bevissthet om rettslig grunnlag og etikk</span>
+              <span>Krever ekstra varsomhet rundt lov og etikk</span>
             </div>
           </div>
         </section>
@@ -79,24 +79,23 @@ export function HelpGuide() {
         <section className={styles.section}>
           <h3>Kjekt å vite</h3>
           <ul>
-            <li>Appen fungerer offline etter første besøk</li>
-            <li>Søk fungerer på norsk og engelsk</li>
-            <li>Klikk på et verktøynavn for å åpne det</li>
+            <li>Klikk på et verktøynavn for å åpne verktøyet</li>
+            <li>Du kan søke på norsk og engelsk</li>
+            <li>Appen virker uten nett etter første besøk</li>
           </ul>
         </section>
 
         <section className={styles.section}>
           <h3>Installer appen</h3>
-          <p>Sporjeger kan installeres som app på enheten din:</p>
           <dl className={styles.installList}>
             <dt>iPhone/iPad</dt>
-            <dd>Trykk Del-knappen, deretter «Legg til på Hjem-skjerm»</dd>
+            <dd>Del-knappen, så «Legg til på Hjem-skjerm»</dd>
 
             <dt>Android</dt>
-            <dd>Trykk menyknappen, deretter «Installer app» eller «Legg til på startskjermen»</dd>
+            <dd>Menyknappen, så «Installer app»</dd>
 
-            <dt>Desktop</dt>
-            <dd>Klikk installasjons-ikonet i adressefeltet (Chrome/Edge)</dd>
+            <dt>PC/Mac</dt>
+            <dd>Installer-ikonet i adressefeltet (Chrome/Edge)</dd>
           </dl>
         </section>
       </BottomSheet>

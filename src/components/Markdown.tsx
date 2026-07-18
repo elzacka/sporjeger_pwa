@@ -35,10 +35,12 @@ function parseMarkdown(markdown: string): string {
     .replace(/\\\\/g, ESCAPED_BACKSLASH)
     // Håndter escaped asterisk
     .replace(/\\\*/g, ESCAPED_ASTERISK)
-    // Escape HTML for sikkerhet
+    // Escape HTML for sikkerhet (også anførselstegn, mot attributt-injeksjon)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 
   // Headers (må komme før andre regler)
   html = html.replace(/^### (.+)$/gm, '<h4>$1</h4>')
@@ -54,10 +56,16 @@ function parseMarkdown(markdown: string): string {
   html = html.replace(new RegExp(ESCAPED_ASTERISK, 'g'), '*')
   html = html.replace(new RegExp(ESCAPED_BACKSLASH, 'g'), '\\')
 
-  // Links: [text](url)
+  // Links: [text](url) - kun http(s)-lenker tillates (mot javascript:-URLer)
   html = html.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+    (_match, text: string, url: string) => {
+      if (!/^https?:\/\//i.test(url.trim())) {
+        // Ugyldig skjema: vis som ren tekst
+        return `${text} (${url})`
+      }
+      return `<a href="${url.trim()}" target="_blank" rel="noopener noreferrer">${text}</a>`
+    }
   )
 
   // Bare URL autolinks: https://... som ikke allerede er i href="..." eller (...)
@@ -144,7 +152,7 @@ function parseMarkdown(markdown: string): string {
   // Gjenopprett fenced code blocks
   output = output.replace(
     new RegExp(`${CODE_PLACEHOLDER}(\\d+)\u0000`, 'g'),
-    (_match, index: string) => codeBlocks[parseInt(index)]
+    (_match, index: string) => codeBlocks[parseInt(index)] ?? ''
   )
 
   return output

@@ -19,11 +19,20 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icon-192.svg', 'icon-512.svg', 'icon-maskable.svg'],
+      includeAssets: [
+        'favicon.svg',
+        'apple-touch-icon.png',
+        'icon-192.png',
+        'icon-512.png',
+        'icon-maskable.png'
+      ],
       manifest: {
+        id: '/sporjeger_pwa/',
         name: 'Sporjeger',
         short_name: 'Sporjeger',
-        description: 'Norsk OSINT-verktøykatalog',
+        description: 'Norsk OSINT-katalog for digital skattejakt',
+        lang: 'nb',
+        dir: 'ltr',
         theme_color: '#F4F1EA',
         background_color: '#F4F1EA',
         display: 'standalone',
@@ -31,6 +40,7 @@ export default defineConfig({
         scope: '/sporjeger_pwa/',
         categories: ['utilities', 'productivity'],
         icons: [
+          // SVG først (progressiv forbedring), deretter PNG som iOS/Android krever
           {
             src: 'favicon.svg',
             sizes: 'any',
@@ -38,21 +48,21 @@ export default defineConfig({
             purpose: 'any'
           },
           {
-            src: 'icon-192.svg',
+            src: 'icon-192.png',
             sizes: '192x192',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'icon-512.svg',
+            src: 'icon-512.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'icon-maskable.svg',
+            src: 'icon-maskable.png',
             sizes: '512x512',
-            type: 'image/svg+xml',
+            type: 'image/png',
             purpose: 'maskable'
           }
         ]
@@ -61,7 +71,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+            // Kun REST-data - aldri auth-endepunkter i cache
+            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'supabase-cache',

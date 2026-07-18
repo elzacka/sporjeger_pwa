@@ -175,9 +175,12 @@ export const CommandSearch = memo(function CommandSearch({
       onAddFilter({ type: s.type, value: s.value, label: s.label })
       onQueryChange('')
       setSelectedIndex(0)
-    } else if (e.key === 'Backspace' && !query && activeFilters.length > 0) {
+    } else if (e.key === 'Backspace' && !query) {
       // Backspace på tom input fjerner siste filter
-      onRemoveFilter(activeFilters[activeFilters.length - 1])
+      const lastFilter = activeFilters[activeFilters.length - 1]
+      if (lastFilter) {
+        onRemoveFilter(lastFilter)
+      }
     }
   }
 
