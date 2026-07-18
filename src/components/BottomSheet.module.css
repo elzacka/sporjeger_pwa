@@ -99,7 +99,6 @@
   overflow-y: auto;
   max-height: calc(80vh - 61px);
   max-height: calc(80dvh - 61px);
-  -webkit-overflow-scrolling: touch;
   text-align: left;
 }
 
