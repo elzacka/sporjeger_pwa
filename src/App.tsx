@@ -117,6 +117,12 @@ export default function App() {
           onClearAll={clearAll}
         />
 
+        {tools.length > 0 && (
+          <div className={styles.totalCount}>
+            {tools.length} {t.ui.toolsInCatalog}
+          </div>
+        )}
+
         <ToolList
           tools={results}
           isSearching={isSearching}
