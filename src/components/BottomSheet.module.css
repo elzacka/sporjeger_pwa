@@ -59,13 +59,14 @@
   color: var(--text-primary);
 }
 
+/* Diskret lukkeknapp - kun desktop (mobil bruker drag-handleren) */
 .closeButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  margin: -8px -8px -8px 0;
+  width: 32px;
+  height: 32px;
+  margin: -4px -6px -4px 0;
   color: var(--text-muted);
   background: none;
   border: none;
@@ -135,6 +136,11 @@
     padding-top: calc(var(--space-md) + 8px);
     /* Større gripeflate for sveip */
     touch-action: none;
+  }
+
+  /* Mobil bruker drag-handleren, ikke lukkeknapp */
+  .closeButton {
+    display: none;
   }
 
   .content {

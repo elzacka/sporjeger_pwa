@@ -66,14 +66,39 @@
 
 .footer {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-md);
+  gap: var(--space-xs);
   padding: var(--space-lg);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   text-align: center;
   color: var(--text-muted);
+}
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+/* Diskret kreditering som skiller seg ut med aksentfarge */
+.credit {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.credit:hover {
+  text-decoration: underline;
+}
+
+.credit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* Responsiv */

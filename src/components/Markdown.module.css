@@ -8,31 +8,40 @@
   min-width: 0;
 }
 
-/* Headers */
-.markdown h2 {
-  margin: var(--space-md) 0 var(--space-sm);
+/* Overskrifter - tydelig, monotont hierarki
+   Guidene bruker ## til verktøytittel (h3) og ### til seksjoner (h4). */
+
+/* Verktøytittel: størst og tyngst, i mono */
+.markdown h2,
+.markdown h3 {
+  margin: var(--space-lg) 0 var(--space-sm);
   font-family: var(--font-mono);
-  font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-.markdown h2:first-child {
-  margin-top: 0;
+.markdown h2 {
+  font-size: 1.125rem;
 }
 
 .markdown h3 {
-  margin: var(--space-md) 0 var(--space-xs);
-  font-family: var(--font-mono);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--text-primary);
+  font-size: 1.0625rem;
 }
 
+.markdown h2:first-child,
+.markdown h3:first-child {
+  margin-top: 0;
+}
+
+/* Seksjonsetikett: versal mono, som ellers i appen (FASE, KATEGORI, SLIK SØKER DU).
+   Skiller seg tydelig fra fete løpetekst-etiketter. */
 .markdown h4 {
-  margin: var(--space-sm) 0 var(--space-xs);
-  font-size: 0.875rem;
-  font-weight: 500;
+  margin: var(--space-lg) 0 var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-primary);
 }
 
@@ -55,9 +64,11 @@
   text-decoration: underline;
 }
 
-/* Bold and italic */
+/* Bold and italic
+   Fet løpetekst brukes til korte etiketter («Datainnsamling:»). Holdes på
+   medium vekt, ikke halvfet, så den ikke konkurrerer med seksjonsoverskriftene. */
 .markdown strong {
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary);
 }
 

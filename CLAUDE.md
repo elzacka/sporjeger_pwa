@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Sporjeger is a Norwegian OSINT tool catalog PWA. The UI is in Norwegian, while database values are English. The app is a pure read-only client: no auth, no writes. All catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key.
 
-**Current version: 2.1.0** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
+**Current version: 2.1.1** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
 
 Setup, commands, structure, and deploy are documented in `README.md` — do not duplicate them here.
 

@@ -1,22 +1,26 @@
 # Sporjeger
 
-Norsk OSINT-katalog med over 350 verktøy for research i åpne kilder. Minimalistisk PWA.
+Norsk OSINT-katalog med over 350 verktøy for å finne informasjon i åpne kilder. Minimalistisk PWA.
 
 **Live:** https://elzacka.github.io/sporjeger_pwa/
 
 ## Om appen
 
-Appen er en ren leseklient: ingen innlogging, ingen skriving. Katalogen vedlikeholdes automatisk mot Supabase (synkronisering med Bellingcat Toolkit, kvalitetskontroll og lenkesjekk).
+Appen er et oppslagsverk uten innlogging eller skriving.
+Databasen i Supabase vedlikeholdes automatisk:
+
+- Et "team" med KI-agenter i Claude kombinert med en serie scheduled tasks
+- De synkroniserer mot Bellingcat Toolkit, kontrollerer kvalitet, sjekker lenker og oversetter beskrivelser til norsk klarspråk
 
 ## Funksjoner
 
-- Fuzzy-søk med naturlig språk («gratis terminal»)
+- Fuzzy-søk med naturlig språk
 - Kategori- og filterbasert navigering (fase, kategori, type, pris, region)
 - Alltid synlig teller for totalt antall verktøy
 - Offline-støtte via Service Worker
-- Tastatursnarvei: `Ctrl+K` fokuserer søk, `Esc` nullstiller
-- Veiledning i bunnark (native dialog)
-- PWA-installasjon med egen prompt
+- Tastatursnarvei: `Ctrl+K` flytter markør til søkefelt, `Esc` nullstiller
+- Guide i "bottom sheet"
+- Kan installeres som app (PWA)
 - Markdown-baserte verktøyguider med kodeblokker og klikkbare URL-er
 - Varselsindikator for verktøy som krever ekstra bevissthet om rettslig grunnlag
 
@@ -26,7 +30,7 @@ Appen er en ren leseklient: ingen innlogging, ingen skriving. Katalogen vedlikeh
 - Vite 7.3 + vite-plugin-pwa 1.2
 - Supabase (database, kun lesetilgang)
 - Fuse.js 7.1 (fuzzy-søk)
-- Selvhostede fonter og ikoner (ingen eksterne CDN-er)
+- Fonter og ikoner ligger lokalt (ingen eksterne CDN-er)
 
 ## Oppsett
 
@@ -48,9 +52,9 @@ npm run preview  # Forhåndsvis produksjonsbygg
 npm run lint     # ESLint
 ```
 
-## Deploy
+## Publisering
 
-Push til `main` trigger `.github/workflows/deploy.yml`, som bygger og publiserer til GitHub Pages. Miljøvariablene over ligger som repository secrets.
+Når du pusher til `main`, kjører `.github/workflows/deploy.yml` som bygger og publiserer til GitHub Pages. Miljøvariablene over ligger som repository secrets.
 
 ## Struktur
 
@@ -63,6 +67,16 @@ src/
 ├── styles/         # Global CSS
 └── types/          # TypeScript-typer
 ```
+
+## Kilder og kreditering
+
+Mange av verktøybeskrivelsene i Sporjeger bygger på **Bellingcats Online Investigation Toolkit**, en dugnadsbasert verktøykatalog fra den ideelle organisasjonen Bellingcat. Takk til Bellingcat og bidragsyterne deres.
+
+- Katalog: https://bellingcat.gitbook.io/toolkit
+- Bellingcat: https://www.bellingcat.com
+- Lisens: se [Bellingcats egne vilkår](https://github.com/bellingcat/toolkit)
+
+Katalogen inneholder også verktøy som ikke finnes hos Bellingcat, blant annet norske verktøy lagt til av meg.
 
 ## Lisens
 

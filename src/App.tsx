@@ -79,8 +79,18 @@ export default function App() {
       </main>
 
       <footer className={styles.footer}>
-        <span>{t.ui.footer}</span>
-        <HelpGuide />
+        <div className={styles.footerRow}>
+          <span>{t.ui.footer}</span>
+          <HelpGuide />
+        </div>
+        <a
+          className={styles.credit}
+          href="https://github.com/elzacka"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          – laget av elzacka; inspirert av Bellingcat
+        </a>
       </footer>
 
       <InstallPrompt />

@@ -11,7 +11,7 @@ export function HelpGuide() {
         type="button"
         className={styles.helpButton}
         onClick={() => setIsOpen(true)}
-        aria-label="Vis veiledning"
+        aria-label="Vis guide"
       >
         <svg
           width="16"
@@ -27,12 +27,12 @@ export function HelpGuide() {
           <path d="M2 2h12v12H2z" />
           <path d="M5 5h6M5 8h6M5 11h4" />
         </svg>
-        <span className={styles.helpLabel}>Veiledning</span>
+        <span className={styles.helpLabel}>Guide</span>
       </button>
 
-      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} title="Veiledning">
+      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} title="Guide">
         <p className={styles.ingress}>
-          Sporjeger samler verktøy for å finne informasjon i åpne kilder – kalt OSINT (Open Source Intelligence).
+          Sporjeger er en katalog med verktøy for å finne informasjon i åpne kilder. Også kalt OSINT (Open Source Intelligence).
         </p>
 
         <aside className={styles.disclaimer}>
@@ -41,17 +41,17 @@ export function HelpGuide() {
         </aside>
 
         <section className={styles.section}>
-          <h3>Slik søker du</h3>
+          <h3>Slik søker du og bruker filtrene</h3>
           <ul>
-            <li>Klikk i søkefeltet, eller trykk <kbd>Ctrl</kbd>+<kbd>K</kbd> (<kbd>Cmd</kbd>+<kbd>K</kbd> på Mac)</li>
+            <li>Bruk søk og filtrering hver for seg eller kombinert</li>
+            <li>Klikk i søkefeltet, eller trykk <kbd>Ctrl</kbd>+<kbd>K</kbd></li>
             <li>Velg en kategori for å filtrere</li>
-            <li>Kombiner søk og filtre for å snevre inn</li>
             <li>Trykk <kbd>Esc</kbd> for å nullstille</li>
           </ul>
         </section>
 
         <section className={styles.section}>
-          <h3>Merker på verktøyene</h3>
+          <h3>Etiketter på verktøyene</h3>
           <div className={styles.badgeList}>
             <div className={styles.badgeItem}>
               <span className={`${styles.badge} ${styles.badgeTerminal}`}>Terminal</span>
@@ -79,8 +79,9 @@ export function HelpGuide() {
         <section className={styles.section}>
           <h3>Kjekt å vite</h3>
           <ul>
-            <li>Klikk på et verktøynavn for å åpne verktøyet</li>
             <li>Du kan søke på norsk og engelsk</li>
+            <li>Du kan søke på alt i katalogen – også beskrivelsene</li>
+            <li>Klikk på et verktøynavn for å åpne verktøyet</li>
             <li>Appen virker uten nett etter første besøk</li>
           </ul>
         </section>

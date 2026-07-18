@@ -81,7 +81,7 @@ export const t = {
     tools: 'verktøy',
     tool: 'verktøy',
     toolsInCatalog: 'verktøy totalt',
-    footer: 'Sporjeger - OSINT-katalog for digital skattejakt',
+    footer: 'Sporjeger OSINT',
     loading: 'Laster...',
     offline: 'Du er frakoblet. Viser bufret data.',
 
