@@ -30,12 +30,12 @@
   color: var(--accent);
 }
 
-.badges {
+.tags {
   display: flex;
   gap: var(--space-xs);
 }
 
-.badge {
+.tag {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -52,23 +52,23 @@
   cursor: help;
 }
 
-.badge[data-type="terminal"] {
+.tag[data-type="terminal"] {
   background: var(--badge-terminal);
 }
 
-.badge[data-type="registration"] {
+.tag[data-type="registration"] {
   background: var(--badge-registration);
 }
 
-.badge[data-type="manual"] {
+.tag[data-type="manual"] {
   background: var(--badge-manual);
 }
 
-.badge[data-type="freemium"] {
+.tag[data-type="freemium"] {
   background: var(--badge-freemium);
 }
 
-.badge[data-type="paid"] {
+.tag[data-type="paid"] {
   background: var(--badge-paid);
 }
 
@@ -131,13 +131,15 @@
   color: var(--accent);
 }
 
-.expandIcon {
-  font-size: 0.75rem;
-  line-height: 1;
+.expandButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* Guide/tilleggsinfo-seksjon */
 .guide {
+  position: relative;
   margin-top: var(--space-sm);
   padding: var(--space-md);
   background: var(--bg-secondary);
@@ -145,6 +147,57 @@
   border-left: 3px solid var(--border);
   min-width: 0;
   overflow: hidden;
+}
+
+/* Pin: lås guiden åpen (deaktiver klikk-for-å-lukke), subtilt øverst til høyre */
+.pin {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.pin:hover {
+  opacity: 1;
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.pin:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pinActive {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* URL øverst i guiden, med et lite gap ned fra toppkanten */
+.guideUrl {
+  display: block;
+  margin-top: calc(-1 * var(--space-xs));
+  margin-bottom: var(--space-sm);
+  padding-right: var(--space-xl);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 /* Responsiv */

@@ -18,6 +18,13 @@
   animation: dialogIn 0.22s ease;
 }
 
+/* Dialogen får fokus ved showModal(). Fjern fokusrammen på selve arket
+   (vises ellers som en strek øverst på mobil). Elementer inni beholder sine. */
+.sheet:focus,
+.sheet:focus-visible {
+  outline: none;
+}
+
 .sheet::backdrop {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(2px);

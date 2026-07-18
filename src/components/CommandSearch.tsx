@@ -313,14 +313,15 @@ export const CommandSearch = memo(function CommandSearch({
           <span>Filtre</span>
           <svg
             className={styles.toggleIcon}
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
+            width="18"
+            height="18"
+            viewBox="0 -960 960 960"
+            fill="currentColor"
+            aria-hidden="true"
           >
-            <path d="M3 4.5L6 7.5L9 4.5" />
+            <path d={filtersOpen
+              ? 'm283-345-43-43 240-240 240 239-43 43-197-197-197 198Z'
+              : 'M480-345 240-585l43-43 197 198 197-197 43 43-240 239Z'} />
           </svg>
         </button>
 

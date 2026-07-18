@@ -1,6 +1,6 @@
 /* Markdown-styling som matcher Sporjeger-designet */
 .markdown {
-  font-size: 0.9375rem;
+  font-size: 0.721875rem;
   line-height: 1.6;
   color: var(--text-secondary);
   overflow-wrap: break-word;
@@ -21,11 +21,11 @@
 }
 
 .markdown h2 {
-  font-size: 1.125rem;
+  font-size: 0.7875rem;
 }
 
 .markdown h3 {
-  font-size: 1.0625rem;
+  font-size: 0.74375rem;
 }
 
 .markdown h2:first-child,
@@ -38,7 +38,7 @@
 .markdown h4 {
   margin: var(--space-lg) 0 var(--space-xs);
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.56875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -105,7 +105,7 @@
   display: inline-block;
   padding: 1px 5px;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.56875rem;
   color: var(--text-primary);
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
@@ -125,7 +125,7 @@
 .markdown pre code {
   display: block;
   padding: 0;
-  font-size: 0.8125rem;
+  font-size: 0.56875rem;
   background: none;
   border: none;
   border-radius: 0;

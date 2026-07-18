@@ -223,13 +223,7 @@
   color: var(--text-secondary);
 }
 
-.toggleIcon {
-  transition: transform 0.2s ease;
-}
-
-.filterToggle.open .toggleIcon {
-  transform: rotate(180deg);
-}
+/* Ikonet byttes via path (expand_more/expand_less), ikke rotasjon */
 
 /* Filter-panel */
 .filterPanel {

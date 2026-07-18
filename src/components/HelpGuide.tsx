@@ -52,25 +52,25 @@ export function HelpGuide() {
 
         <section className={styles.section}>
           <h3>Etiketter på verktøyene</h3>
-          <div className={styles.badgeList}>
-            <div className={styles.badgeItem}>
-              <span className={`${styles.badge} ${styles.badgeTerminal}`}>Terminal</span>
+          <div className={styles.tagList}>
+            <div className={styles.tagItem}>
+              <span className={`${styles.tag} ${styles.tagTerminal}`}>Terminal</span>
               <span>Kjøres via kommandolinjen</span>
             </div>
-            <div className={styles.badgeItem}>
-              <span className={`${styles.badge} ${styles.badgeRegistration}`}>Registrering</span>
+            <div className={styles.tagItem}>
+              <span className={`${styles.tag} ${styles.tagRegistration}`}>Registrering</span>
               <span>Krever at du lager en konto</span>
             </div>
-            <div className={styles.badgeItem}>
-              <span className={`${styles.badge} ${styles.badgeFreemium}`}>Gratish</span>
+            <div className={styles.tagItem}>
+              <span className={`${styles.tag} ${styles.tagFreemium}`}>Gratish</span>
               <span>Gratis, med betalte tillegg</span>
             </div>
-            <div className={styles.badgeItem}>
-              <span className={`${styles.badge} ${styles.badgePaid}`}>Betalt</span>
+            <div className={styles.tagItem}>
+              <span className={`${styles.tag} ${styles.tagPaid}`}>Betalt</span>
               <span>Koster penger å bruke</span>
             </div>
-            <div className={styles.badgeItem}>
-              <span className={`${styles.badge} ${styles.badgeCaution}`}>!</span>
+            <div className={styles.tagItem}>
+              <span className={`${styles.tag} ${styles.tagCaution}`}>!</span>
               <span>Krever ekstra varsomhet rundt lov og etikk</span>
             </div>
           </div>
