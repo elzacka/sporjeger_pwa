@@ -54,23 +54,23 @@ export function HelpGuide() {
           <h3>Etiketter på verktøyene</h3>
           <div className={styles.tagList}>
             <div className={styles.tagItem}>
-              <span className={styles.tag} data-type="terminal">Terminal</span>
+              <span className={styles.tag} style={{ background: '#6B705C', color: '#F4F1EA' }}>Terminal</span>
               <span>Kjøres via kommandolinjen</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={styles.tag} data-type="registration">Registrering</span>
+              <span className={styles.tag} style={{ background: '#9B2915', color: '#F4F1EA' }}>Registrering</span>
               <span>Krever at du lager en konto</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={styles.tag} data-type="freemium">Gratish</span>
+              <span className={styles.tag} style={{ background: '#7B6D4D', color: '#F4F1EA' }}>Gratish</span>
               <span>Gratis, med betalte tillegg</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={styles.tag} data-type="paid">Betalt</span>
+              <span className={styles.tag} style={{ background: '#9B2915', color: '#F4F1EA' }}>Betalt</span>
               <span>Koster penger å bruke</span>
             </div>
             <div className={styles.tagItem}>
-              <span className={styles.tag} data-type="caution">!</span>
+              <span className={styles.tag} style={{ background: '#f5a623', color: '#7a5200' }}>!</span>
               <span>Krever ekstra varsomhet rundt lov og etikk</span>
             </div>
           </div>
