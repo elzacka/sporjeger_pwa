@@ -312,7 +312,6 @@ export const CommandSearch = memo(function CommandSearch({
         >
           <span>Filtre</span>
           <svg
-            className={styles.toggleIcon}
             width="18"
             height="18"
             viewBox="0 -960 960 960"

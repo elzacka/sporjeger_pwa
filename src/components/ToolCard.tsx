@@ -41,25 +41,25 @@ export const ToolCard = memo(function ToolCard({ tool }: ToolCardProps) {
             {tool.name}
           </a>
         </h2>
-        <div className={styles.tags}>
+        <div className={styles.badges}>
           {tool.tool_type === 'terminal' && (
-            <span className={styles.tag} data-type="terminal" title="Terminalverktøy - kjøres i terminal/kommandolinje">
+            <span className={styles.badge} data-type="terminal" title="Terminalverktøy - kjøres i terminal/kommandolinje">
               Terminal
             </span>
           )}
           {tool.requires_registration && (
-            <span className={styles.tag} data-type="registration" title="Krever registrering for å bruke">
+            <span className={styles.badge} data-type="registration" title="Krever registrering for å bruke">
               Registrering
             </span>
           )}
           {tool.requires_manual_url && (
-            <span className={styles.tag} data-type="manual" title="Krever manuell redigering av URL">
+            <span className={styles.badge} data-type="manual" title="Krever manuell redigering av URL">
               Manuell URL
             </span>
           )}
           {tool.pricing_model && tool.pricing_model !== 'free' && (
             <span
-              className={styles.tag}
+              className={styles.badge}
               data-type={tool.pricing_model}
               title={tool.pricing_model === 'freemium' ? 'Gratis med betalte funksjoner' : 'Betalt tjeneste'}
             >

@@ -26,10 +26,11 @@
   --badge-free: #4A7C59;
   --badge-freemium: #7B6D4D;
   --badge-paid: #9B2915;
+  --badge-caution: #f5a623;
+  --badge-caution-fg: #7a5200;
 
   /* Typografi */
   --font-mono: 'DM Mono', 'Consolas', monospace;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Spacing */
   --space-xs: 0.25rem;

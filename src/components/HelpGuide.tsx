@@ -52,20 +52,20 @@ export function HelpGuide() {
 
         <section className={styles.section}>
           <h3>Verktøyetiketter</h3>
-          <div className={styles.tagGrid}>
-            <div><span className={styles.tag} style={{ background: '#6B705C', color: '#F4F1EA' }}>Terminal</span></div>
+          <div className={styles.badgeGrid}>
+            <div><span className={styles.badge} data-type="terminal">Terminal</span></div>
             <div>Kjøres via kommandolinjen</div>
 
-            <div><span className={styles.tag} style={{ background: '#9B2915', color: '#F4F1EA' }}>Registrering</span></div>
+            <div><span className={styles.badge} data-type="registration">Registrering</span></div>
             <div>Krever at du lager en konto</div>
 
-            <div><span className={styles.tag} style={{ background: '#7B6D4D', color: '#F4F1EA' }}>Gratish</span></div>
+            <div><span className={styles.badge} data-type="freemium">Gratish</span></div>
             <div>Gratis, med betalte tillegg</div>
 
-            <div><span className={styles.tag} style={{ background: '#9B2915', color: '#F4F1EA' }}>Betalt</span></div>
+            <div><span className={styles.badge} data-type="paid">Betalt</span></div>
             <div>Koster penger å bruke</div>
 
-            <div><span className={styles.tag} style={{ background: '#f5a623', color: '#7a5200' }}>!</span></div>
+            <div><span className={styles.badge} data-type="caution">!</span></div>
             <div>Vær ekstra varsom (lov/etikk)</div>
           </div>
         </section>
