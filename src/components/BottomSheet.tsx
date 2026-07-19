@@ -9,29 +9,12 @@ interface BottomSheetProps {
 }
 
 export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null)
   const [dragOffset, setDragOffset] = useState(0)
   const dragStartY = useRef<number | null>(null)
 
-  // Åpne/lukke via native dialog-API - gir fokusfelle, ::backdrop og aria-modal gratis
-  useEffect(() => {
-    const dialog = dialogRef.current
-    if (!dialog) return
-
-    if (isOpen && !dialog.open) {
-      dialog.showModal()
-      setDragOffset(0)
-    } else if (!isOpen && dialog.open) {
-      dialog.close()
-    }
-  }, [isOpen])
-
-  // Escape: håndteres i capture-fasen på document slik at den stoppes FØR
-  // CommandSearch sin document-lytter, som ellers ville nullstilt søk/filtre.
-  // (React sin syntetiske stopPropagation når ikke native document-lyttere.)
+  // Escape i capture-fasen slik at den stoppes FØR CommandSearch sin lytter
   useEffect(() => {
     if (!isOpen) return
-
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation()
@@ -46,19 +29,10 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
   // Lås bakgrunnsscroll mens arket er åpent
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
+    return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
-  // Klikk på backdrop (utenfor selve arket) lukker
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === dialogRef.current) {
-      onClose()
-    }
-  }
-
-  // Sveip ned for å lukke (kun berøring, mobil)
+  // Sveip ned for å lukke
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0]
     if (touch) dragStartY.current = touch.clientY
@@ -73,22 +47,23 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
   }
 
   const handleTouchEnd = () => {
-    if (dragOffset > 100) {
-      onClose()
-    }
+    if (dragOffset > 100) onClose()
     setDragOffset(0)
     dragStartY.current = null
   }
 
   return (
-    <dialog
-      ref={dialogRef}
-      className={styles.sheet}
-      onClick={handleBackdropClick}
-      aria-labelledby="sheet-title"
-    >
+    <>
       <div
-        className={styles.inner}
+        className={`${styles.backdrop} ${isOpen ? styles.backdropOpen : ''}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sheet-title"
+        className={`${styles.sheet} ${isOpen ? styles.sheetOpen : ''}`}
         style={dragOffset > 0 ? { transform: `translateY(${dragOffset}px)`, transition: 'none' } : undefined}
       >
         <header
@@ -114,6 +89,6 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
           {children}
         </div>
       </div>
-    </dialog>
+    </>
   )
 }

@@ -1,66 +1,71 @@
-/* Native dialog - sentrert på desktop, bunnark på mobil */
-.sheet {
-  padding: 0;
-  border: 1px solid var(--border);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
-
-  /* Desktop: sentrert dialog */
+/* Backdrop */
+.backdrop {
   position: fixed;
   inset: 0;
-  margin: auto;
-  width: min(600px, calc(100vw - 2 * var(--space-lg)));
-  max-height: min(80vh, 720px);
-  max-height: min(80dvh, 720px);
-  border-radius: 12px;
-}
-
-/* Animation lives on the inner wrapper, never on .sheet itself.
-   overflow:clip + transform on the same element triggers an iOS compositor
-   bug where child backgrounds are never painted. */
-.inner {
-  animation: dialogIn 0.22s ease;
-}
-
-/* Dialogen får fokus ved showModal(). Fjern fokusrammen på selve arket
-   (vises ellers som en strek øverst på mobil). Elementer inni beholder sine. */
-.sheet:focus,
-.sheet:focus-visible {
-  outline: none;
-}
-
-.sheet::backdrop {
   background: rgba(0, 0, 0, 0.4);
-  animation: fadeIn 0.2s ease;
+  z-index: 99;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.backdropOpen {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-@keyframes dialogIn {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+/* Sheet — mobil bunnark (standard) */
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 85vh;
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  will-change: transform;
+  transform: translateY(100%);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 100;
+  pointer-events: none;
 }
 
-/* Header */
+.sheetOpen {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Handle-pil */
+.handle {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+/* Header er draggsonen — touch-action:none kun her */
 .header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  position: relative;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-md) var(--space-lg);
+  padding: calc(var(--space-md) + 12px) var(--space-lg) var(--space-md);
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-light);
-}
-
-.handle {
-  display: none;
+  touch-action: none;
 }
 
 .title {
@@ -71,95 +76,78 @@
   color: var(--text-primary);
 }
 
-/* Diskret lukkeknapp - kun desktop (mobil bruker drag-handleren) */
+/* Lukkeknapp — kun desktop */
 .closeButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin: -4px -6px -4px 0;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  display: none;
 }
 
-.closeButton:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
-}
-
-.closeButton:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Content */
+/* Scrollområde */
 .content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: var(--space-lg);
   padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
-  overflow-y: auto;
-  /* Override inherited touch-action: none from header so content scrolls on iOS */
-  touch-action: pan-y;
-  max-height: calc(80vh - 61px);
-  max-height: calc(80dvh - 61px);
   text-align: left;
 }
 
-/* Mobil: bunnark, full bredde, festet til bunnen */
-@media (max-width: 600px) {
+/* Desktop: sentrert modal */
+@media (min-width: 601px) {
   .sheet {
-    width: 100%;
-    max-width: 100%;
-    max-height: 85vh;
-    max-height: 85dvh;
-    margin: 0 0 0 auto;
-    margin-inline: auto;
-    /* Fest til bunnen */
-    position: fixed;
-    inset: auto 0 0 0;
-    border: 1px solid var(--border);
-    border-bottom: none;
-    border-radius: 16px 16px 0 0;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: min(600px, calc(100vw - 3rem));
+    max-height: min(80vh, 720px);
+    max-height: min(80dvh, 720px);
+    border-radius: 12px;
+    border-bottom: 1px solid var(--border);
+    will-change: transform, opacity;
+    transform: translate(-50%, calc(-50% + 16px));
+    opacity: 0;
+    transition: transform 0.22s ease, opacity 0.22s ease;
   }
 
-  .inner {
-    animation: slideUp 0.25s ease;
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(40px); }
-    to { transform: translateY(0); }
+  .sheetOpen {
+    transform: translate(-50%, -50%);
+    opacity: 1;
   }
 
   .handle {
-    display: block;
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-  }
-
-  .header {
-    padding-top: calc(var(--space-md) + 8px);
-    /* Større gripeflate for sveip */
-    touch-action: none;
-  }
-
-  /* Mobil bruker drag-handleren, ikke lukkeknapp */
-  .closeButton {
     display: none;
   }
 
-  .content {
-    max-height: calc(85vh - 69px);
-    max-height: calc(85dvh - 69px);
+  .header {
+    padding-top: var(--space-md);
+    touch-action: auto;
+  }
+
+  .closeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin: -4px -6px -4px 0;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .closeButton:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+  }
+
+  .closeButton:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 }
