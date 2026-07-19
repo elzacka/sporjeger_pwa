@@ -5,7 +5,7 @@
   background: var(--bg-primary);
   color: var(--text-primary);
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
-  overflow: clip;
+  overflow: hidden;
 
   /* Desktop: sentrert dialog */
   position: fixed;
@@ -102,6 +102,8 @@
   padding: var(--space-lg);
   padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
+  /* Override inherited touch-action: none from header so content scrolls on iOS */
+  touch-action: pan-y;
   max-height: calc(80vh - 61px);
   max-height: calc(80dvh - 61px);
   text-align: left;
@@ -122,7 +124,6 @@
     border: 1px solid var(--border);
     border-bottom: none;
     border-radius: 16px 16px 0 0;
-    touch-action: none;
   }
 
   .inner {

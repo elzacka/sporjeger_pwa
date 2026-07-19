@@ -86,9 +86,11 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
       className={styles.sheet}
       onClick={handleBackdropClick}
       aria-labelledby="sheet-title"
-      style={dragOffset > 0 ? { transform: `translateY(${dragOffset}px)`, transition: 'none' } : undefined}
     >
-      <div className={styles.inner}>
+      <div
+        className={styles.inner}
+        style={dragOffset > 0 ? { transform: `translateY(${dragOffset}px)`, transition: 'none' } : undefined}
+      >
         <header
           className={styles.header}
           onTouchStart={handleTouchStart}
