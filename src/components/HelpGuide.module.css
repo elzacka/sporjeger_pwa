@@ -143,11 +143,12 @@
 }
 
 .tag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   width: 85px;
   height: 1.25rem;
+  line-height: 1.25rem;
+  text-align: center;
+  vertical-align: middle;
   padding: 0 6px;
   font-family: var(--font-mono);
   font-size: 0.625rem;
@@ -157,10 +158,6 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
   flex-shrink: 0;
-  /* Override the global * transition: background must paint immediately when
-     the bottom sheet slides in on iOS Safari. The translateY(100%) slideUp
-     causes WebKit to snapshot a compositing layer before the CSS-variable
-     background-color transition resolves, leaving badges transparent. */
   transition: none;
 }
 

@@ -10,6 +10,16 @@ import '@fontsource/inter/500.css'
 import '@fontsource/inter/600.css'
 import './styles/index.css'
 
+if ('serviceWorker' in navigator) {
+  let reloading = false
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!reloading) {
+      reloading = true
+      window.location.reload()
+    }
+  })
+}
+
 const rootElement = document.getElementById('root')
 if (!rootElement) {
   throw new Error('Root element not found. Unable to mount React app.')
