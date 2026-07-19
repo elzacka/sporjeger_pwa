@@ -122,41 +122,39 @@
   border-radius: 2px;
 }
 
-/* Badge-grid */
-.badgeGrid {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  align-items: center;
-  width: 100%;
+/* Badge-liste — per rad flex, etter Marauder-mønsteret */
+.badgeList {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Row dividers — top border on every cell from the second row onwards */
-.badgeGrid > :nth-child(n+3) {
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.375rem 0;
   border-top: 1px solid var(--border-light);
 }
 
-/* Badge cells (left column) */
-.badgeGrid > :nth-child(odd) {
-  padding: 0.375rem var(--space-sm) 0.375rem 0;
+.badgeRow:first-child {
+  border-top: none;
 }
 
-/* Description cells (right column) */
-.badgeGrid > :nth-child(even) {
-  padding: 0.375rem 0 0.375rem var(--space-sm);
-  border-left: 1px solid var(--border-light);
+.badgeDesc {
+  flex: 1;
+  min-width: 0;
   font-size: 0.67375rem;
   color: var(--text-secondary);
   line-height: 1.5;
-  min-width: 0;
 }
 
 .badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   width: 85px;
   height: 1.25rem;
-  line-height: 1.25rem;
-  text-align: center;
-  vertical-align: middle;
   padding: 0 6px;
   font-family: var(--font-mono);
   font-size: 0.625rem;

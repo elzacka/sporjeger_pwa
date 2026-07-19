@@ -52,21 +52,27 @@ export function HelpGuide() {
 
         <section className={styles.section}>
           <h3>Verktøyetiketter</h3>
-          <div className={styles.badgeGrid}>
-            <div><span className={styles.badge} data-type="terminal">Terminal</span></div>
-            <div>Kjøres via kommandolinjen</div>
-
-            <div><span className={styles.badge} data-type="registration">Registrering</span></div>
-            <div>Krever at du lager en konto</div>
-
-            <div><span className={styles.badge} data-type="freemium">Gratish</span></div>
-            <div>Gratis, med betalte tillegg</div>
-
-            <div><span className={styles.badge} data-type="paid">Betalt</span></div>
-            <div>Koster penger å bruke</div>
-
-            <div><span className={styles.badge} data-type="caution">!</span></div>
-            <div>Vær ekstra varsom (lov/etikk)</div>
+          <div className={styles.badgeList}>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge} data-type="terminal">Terminal</span>
+              <span className={styles.badgeDesc}>Kjøres via kommandolinjen</span>
+            </div>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge} data-type="registration">Registrering</span>
+              <span className={styles.badgeDesc}>Krever at du lager en konto</span>
+            </div>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge} data-type="freemium">Gratish</span>
+              <span className={styles.badgeDesc}>Gratis, med betalte tillegg</span>
+            </div>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge} data-type="paid">Betalt</span>
+              <span className={styles.badgeDesc}>Koster penger å bruke</span>
+            </div>
+            <div className={styles.badgeRow}>
+              <span className={styles.badge} data-type="caution">!</span>
+              <span className={styles.badgeDesc}>Vær ekstra varsom (lov/etikk)</span>
+            </div>
           </div>
         </section>
 
