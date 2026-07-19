@@ -134,12 +134,14 @@
 .tagItem {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-md);
 }
 
 .tagItem span:last-child {
   font-size: 0.67375rem;
   color: var(--text-secondary);
+  text-align: right;
 }
 
 .tag {
