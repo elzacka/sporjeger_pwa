@@ -125,8 +125,9 @@
 /* Badge-grid */
 .badgeGrid {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: max-content 1fr;
   align-items: center;
+  width: 100%;
 }
 
 /* Row dividers — top border on every cell from the second row onwards */
@@ -146,6 +147,7 @@
   font-size: 0.67375rem;
   color: var(--text-secondary);
   line-height: 1.5;
+  min-width: 0;
 }
 
 .badge {
