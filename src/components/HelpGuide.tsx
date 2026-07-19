@@ -51,7 +51,7 @@ export function HelpGuide() {
         </section>
 
         <section className={styles.section}>
-          <h3>Etiketter på verktøyene</h3>
+          <h3>Verktøyetiketter</h3>
           <div className={styles.tagGrid}>
             <div><span className={styles.tag} style={{ background: '#6B705C', color: '#F4F1EA' }}>Terminal</span></div>
             <div>Kjøres via kommandolinjen</div>
@@ -66,7 +66,7 @@ export function HelpGuide() {
             <div>Koster penger å bruke</div>
 
             <div><span className={styles.tag} style={{ background: '#f5a623', color: '#7a5200' }}>!</span></div>
-            <div>Krever ekstra varsomhet rundt lov og etikk</div>
+            <div>Vær ekstra varsom (lov/etikk)</div>
           </div>
         </section>
 
