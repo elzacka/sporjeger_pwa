@@ -15,6 +15,12 @@
   max-height: min(80vh, 720px);
   max-height: min(80dvh, 720px);
   border-radius: 12px;
+}
+
+/* Animation lives on the inner wrapper, never on .sheet itself.
+   overflow:clip + transform on the same element triggers an iOS compositor
+   bug where child backgrounds are never painted. */
+.inner {
   animation: dialogIn 0.22s ease;
 }
 
@@ -116,8 +122,11 @@
     border: 1px solid var(--border);
     border-bottom: none;
     border-radius: 16px 16px 0 0;
-    animation: slideUp 0.25s ease;
     touch-action: none;
+  }
+
+  .inner {
+    animation: slideUp 0.25s ease;
   }
 
   @keyframes slideUp {

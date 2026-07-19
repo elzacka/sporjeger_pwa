@@ -88,27 +88,29 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
       aria-labelledby="sheet-title"
       style={dragOffset > 0 ? { transform: `translateY(${dragOffset}px)`, transition: 'none' } : undefined}
     >
-      <header
-        className={styles.header}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <div className={styles.handle} aria-hidden="true" />
-        <h2 id="sheet-title" className={styles.title}>{title}</h2>
-        <button
-          type="button"
-          className={styles.closeButton}
-          onClick={onClose}
-          aria-label="Lukk"
+      <div className={styles.inner}>
+        <header
+          className={styles.header}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-            <path d="M4 4l8 8M12 4l-8 8" />
-          </svg>
-        </button>
-      </header>
-      <div className={styles.content}>
-        {children}
+          <div className={styles.handle} aria-hidden="true" />
+          <h2 id="sheet-title" className={styles.title}>{title}</h2>
+          <button
+            type="button"
+            className={styles.closeButton}
+            onClick={onClose}
+            aria-label="Lukk"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
+          </button>
+        </header>
+        <div className={styles.content}>
+          {children}
+        </div>
       </div>
     </dialog>
   )
