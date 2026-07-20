@@ -53,23 +53,23 @@ export function HelpGuide() {
         <section className={styles.section}>
           <h3>Verktøyetiketter</h3>
           <div className={styles.badgeList}>
-            <div className={styles.badgeRow}>
+            <div className={styles.badgeRow} data-label="TERMINAL">
               <span className={`${styles.badge} ${styles.badgeTerminal}`}>Terminal</span>
               <span className={styles.badgeDesc}>Kjøres via kommandolinjen</span>
             </div>
-            <div className={styles.badgeRow}>
+            <div className={styles.badgeRow} data-label="REGISTRERING">
               <span className={`${styles.badge} ${styles.badgeRegistration}`}>Registrering</span>
               <span className={styles.badgeDesc}>Krever at du lager en konto</span>
             </div>
-            <div className={styles.badgeRow}>
+            <div className={styles.badgeRow} data-label="GRATISH">
               <span className={`${styles.badge} ${styles.badgeFreemium}`}>Gratish</span>
               <span className={styles.badgeDesc}>Gratis, med betalte tillegg</span>
             </div>
-            <div className={styles.badgeRow}>
+            <div className={styles.badgeRow} data-label="BETALT">
               <span className={`${styles.badge} ${styles.badgePaid}`}>Betalt</span>
               <span className={styles.badgeDesc}>Koster penger å bruke</span>
             </div>
-            <div className={styles.badgeRow}>
+            <div className={styles.badgeRow} data-label="!">
               <span className={`${styles.badge} ${styles.badgeCaution}`}>!</span>
               <span className={styles.badgeDesc}>Vær ekstra varsom (lov/etikk)</span>
             </div>

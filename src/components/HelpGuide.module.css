@@ -222,4 +222,25 @@
     width: 18px;
     height: 18px;
   }
+
+  /* Mobil: bytt ut chip+beskrivelse med én tekstlinje per rad */
+  .badgeRow {
+    display: block;
+  }
+
+  .badge {
+    display: none;
+  }
+
+  .badgeRow::before {
+    content: attr(data-label) ": ";
+    font-family: var(--font-mono);
+    font-size: 0.67375rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .badgeDesc {
+    display: inline;
+  }
 }
