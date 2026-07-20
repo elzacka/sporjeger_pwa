@@ -10,52 +10,43 @@ interface BottomSheetProps {
 
 export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetProps) {
   const [dragOffset, setDragOffset] = useState(0)
-  const dragStartY = useRef<number | null>(null)
+  const startY = useRef<number | null>(null)
 
-  // Escape i capture-fasen slik at den stoppes FØR CommandSearch sin lytter
+  // Escape lukker arket uten å nullstille søk/filtre i CommandSearch
   useEffect(() => {
     if (!isOpen) return
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation()
-        e.preventDefault()
-        onClose()
-      }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); onClose() }
     }
-    document.addEventListener('keydown', handleEscape, true)
-    return () => document.removeEventListener('keydown', handleEscape, true)
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
   }, [isOpen, onClose])
 
-  // Lås bakgrunnsscroll mens arket er åpent
+  // Lås bakgrunnsscroll
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
-  // Sveip ned for å lukke
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0]
-    if (touch) dragStartY.current = touch.clientY
+  // Sveip ned for å lukke (mobil)
+  const onTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0]?.clientY ?? null
   }
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (dragStartY.current === null) return
-    const touch = e.touches[0]
-    if (!touch) return
-    const delta = touch.clientY - dragStartY.current
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (startY.current === null) return
+    const delta = (e.touches[0]?.clientY ?? 0) - startY.current
     if (delta > 0) setDragOffset(delta)
   }
-
-  const handleTouchEnd = () => {
+  const onTouchEnd = () => {
     if (dragOffset > 100) onClose()
     setDragOffset(0)
-    dragStartY.current = null
+    startY.current = null
   }
 
   return (
     <>
       <div
-        className={`${styles.backdrop} ${isOpen ? styles.backdropOpen : ''}`}
+        className={`${styles.backdrop} ${isOpen ? styles.backdropVisible : ''}`}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -68,15 +59,19 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
       >
         <header
           className={styles.header}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
+          {/* Kun på mobil */}
           <div className={styles.handle} aria-hidden="true" />
+
           <h2 id="sheet-title" className={styles.title}>{title}</h2>
+
+          {/* Kun på desktop */}
           <button
             type="button"
-            className={styles.closeButton}
+            className={styles.closeBtn}
             onClick={onClose}
             aria-label="Lukk"
           >
@@ -85,7 +80,8 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
             </svg>
           </button>
         </header>
-        <div className={styles.content}>
+
+        <div className={styles.body}>
           {children}
         </div>
       </div>

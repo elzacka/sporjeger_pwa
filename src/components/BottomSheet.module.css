@@ -2,38 +2,37 @@
 .backdrop {
   position: fixed;
   inset: 0;
+  z-index: 199;
   background: rgba(0, 0, 0, 0.4);
-  z-index: 99;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
 }
 
-.backdropOpen {
+.backdropVisible {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Sheet — mobil bunnark (standard) */
+/* Sheet — mobil bunnark */
 .sheet {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  max-height: 85vh;
-  max-height: 85dvh;
+  z-index: 200;
   display: flex;
   flex-direction: column;
+  max-height: 85dvh;
   background: var(--bg-primary);
   color: var(--text-primary);
   border: 1px solid var(--border);
   border-bottom: none;
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   transform: translateY(100%);
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-  z-index: 100;
+  transition: transform 0.28s ease;
   pointer-events: none;
 }
 
@@ -42,7 +41,7 @@
   pointer-events: auto;
 }
 
-/* Handle-pil */
+/* Handle-pil — kun mobil */
 .handle {
   position: absolute;
   top: 8px;
@@ -54,43 +53,39 @@
   border-radius: 2px;
 }
 
-/* Header er draggsonen — touch-action:none kun her */
+/* Header — draggsone på mobil, tittel+lukk på desktop */
 .header {
   position: relative;
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: calc(var(--space-md) + 12px) var(--space-lg) var(--space-md);
-  background: var(--bg-primary);
+  justify-content: center;
+  padding: 20px 1.5rem 1rem;
   border-bottom: 1px solid var(--border-light);
+  background: var(--bg-primary);
   touch-action: none;
 }
 
 .title {
-  margin: 0;
   font-family: var(--font-mono);
   font-size: 1rem;
   font-weight: 500;
   color: var(--text-primary);
+  margin: 0;
 }
 
-/* Lukkeknapp — kun desktop */
-.closeButton {
+/* Lukkeknapp — skjult på mobil */
+.closeBtn {
   display: none;
 }
 
-/* Scrollområde */
-.content {
+/* Scrollbart innhold */
+.body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  padding: var(--space-lg);
-  padding-bottom: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
-  text-align: left;
+  padding: 1.5rem;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* Desktop: sentrert modal */
@@ -98,14 +93,13 @@
   .sheet {
     top: 50%;
     left: 50%;
-    right: auto;
     bottom: auto;
+    right: auto;
     width: min(600px, calc(100vw - 3rem));
-    max-height: min(80vh, 720px);
     max-height: min(80dvh, 720px);
     border-radius: 12px;
     border-bottom: 1px solid var(--border);
-    transform: translate(-50%, calc(-50% + 16px));
+    transform: translate(-50%, calc(-50% + 12px));
     opacity: 0;
     transition: transform 0.22s ease, opacity 0.22s ease;
   }
@@ -115,19 +109,24 @@
     opacity: 1;
   }
 
+  /* Handle skjult på desktop */
   .handle {
     display: none;
   }
 
+  /* Tittel til venstre, lukkeknapp til høyre */
   .header {
-    padding-top: var(--space-md);
+    padding: 1rem 1.5rem;
+    justify-content: space-between;
     touch-action: auto;
   }
 
-  .closeButton {
+  /* Lukkeknapp synlig på desktop */
+  .closeBtn {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     width: 32px;
     height: 32px;
     margin: -4px -6px -4px 0;
@@ -139,12 +138,12 @@
     transition: background 0.15s ease, color 0.15s ease;
   }
 
-  .closeButton:hover {
+  .closeBtn:hover {
     color: var(--text-primary);
     background: var(--bg-hover);
   }
 
-  .closeButton:focus-visible {
+  .closeBtn:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
   }

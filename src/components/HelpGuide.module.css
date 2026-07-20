@@ -165,25 +165,7 @@
   letter-spacing: 0.02em;
 }
 
-.badge[data-type="terminal"] {
-  background: var(--badge-terminal);
-}
-
-.badge[data-type="registration"] {
-  background: var(--badge-registration);
-}
-
-.badge[data-type="freemium"] {
-  background: var(--badge-freemium);
-}
-
-.badge[data-type="paid"] {
-  background: var(--badge-paid);
-}
-
 .badge[data-type="caution"] {
-  background: var(--badge-caution);
-  color: var(--badge-caution-fg);
   font-weight: 700;
 }
 
