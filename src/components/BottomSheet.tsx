@@ -12,7 +12,6 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
   const [dragOffset, setDragOffset] = useState(0)
   const startY = useRef<number | null>(null)
 
-  // Escape lukker arket uten å nullstille søk/filtre i CommandSearch
   useEffect(() => {
     if (!isOpen) return
     const onKey = (e: KeyboardEvent) => {
@@ -22,13 +21,11 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
     return () => document.removeEventListener('keydown', onKey, true)
   }, [isOpen, onClose])
 
-  // Lås bakgrunnsscroll
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
-  // Sveip ned for å lukke (mobil)
   const onTouchStart = (e: React.TouchEvent) => {
     startY.current = e.touches[0]?.clientY ?? null
   }
@@ -50,6 +47,14 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
         onClick={onClose}
         aria-hidden="true"
       />
+      {/*
+        Outer wrapper: eneste elementet som har transform (for animasjon).
+        Ingen overflow her — overflow:hidden + transform på SAMME element
+        utløser et iOS Safari-compositing-bug der child-bakgrunner ikke males.
+
+        Inner wrapper: har overflow:hidden + border-radius for å klippe
+        hjørnene, men INGEN transform.
+      */}
       <div
         role="dialog"
         aria-modal="true"
@@ -57,32 +62,29 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
         className={`${styles.sheet} ${isOpen ? styles.sheetOpen : ''}`}
         style={dragOffset > 0 ? { transform: `translateY(${dragOffset}px)`, transition: 'none' } : undefined}
       >
-        <header
-          className={styles.header}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          {/* Kun på mobil */}
-          <div className={styles.handle} aria-hidden="true" />
-
-          <h2 id="sheet-title" className={styles.title}>{title}</h2>
-
-          {/* Kun på desktop */}
-          <button
-            type="button"
-            className={styles.closeBtn}
-            onClick={onClose}
-            aria-label="Lukk"
+        <div className={styles.inner}>
+          <header
+            className={styles.header}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
-              <path d="M4 4l8 8M12 4l-8 8" />
-            </svg>
-          </button>
-        </header>
-
-        <div className={styles.body}>
-          {children}
+            <div className={styles.handle} aria-hidden="true" />
+            <h2 id="sheet-title" className={styles.title}>{title}</h2>
+            <button
+              type="button"
+              className={styles.closeBtn}
+              onClick={onClose}
+              aria-label="Lukk"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M4 4l8 8M12 4l-8 8" />
+              </svg>
+            </button>
+          </header>
+          <div className={styles.body}>
+            {children}
+          </div>
         </div>
       </div>
     </>

@@ -2,15 +2,6 @@ import { useState } from 'react'
 import { BottomSheet } from './BottomSheet'
 import styles from './HelpGuide.module.css'
 
-// Hardkodede farger — ikke via CSS-variabler, for å unngå iOS Safari async-resolution-bug
-const BADGE: Record<string, { backgroundColor: string; color: string }> = {
-  terminal:     { backgroundColor: '#6B705C', color: '#F4F1EA' },
-  registration: { backgroundColor: '#9B2915', color: '#F4F1EA' },
-  freemium:     { backgroundColor: '#7B6D4D', color: '#F4F1EA' },
-  paid:         { backgroundColor: '#9B2915', color: '#F4F1EA' },
-  caution:      { backgroundColor: '#f5a623', color: '#7a5200' },
-}
-
 export function HelpGuide() {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -63,23 +54,23 @@ export function HelpGuide() {
           <h3>Verktøyetiketter</h3>
           <div className={styles.badgeList}>
             <div className={styles.badgeRow}>
-              <span className={styles.badge} style={BADGE.terminal}>Terminal</span>
+              <span className={`${styles.badge} ${styles.badgeTerminal}`}>Terminal</span>
               <span className={styles.badgeDesc}>Kjøres via kommandolinjen</span>
             </div>
             <div className={styles.badgeRow}>
-              <span className={styles.badge} style={BADGE.registration}>Registrering</span>
+              <span className={`${styles.badge} ${styles.badgeRegistration}`}>Registrering</span>
               <span className={styles.badgeDesc}>Krever at du lager en konto</span>
             </div>
             <div className={styles.badgeRow}>
-              <span className={styles.badge} style={BADGE.freemium}>Gratish</span>
+              <span className={`${styles.badge} ${styles.badgeFreemium}`}>Gratish</span>
               <span className={styles.badgeDesc}>Gratis, med betalte tillegg</span>
             </div>
             <div className={styles.badgeRow}>
-              <span className={styles.badge} style={BADGE.paid}>Betalt</span>
+              <span className={`${styles.badge} ${styles.badgePaid}`}>Betalt</span>
               <span className={styles.badgeDesc}>Koster penger å bruke</span>
             </div>
             <div className={styles.badgeRow}>
-              <span className={styles.badge} style={BADGE.caution}>!</span>
+              <span className={`${styles.badge} ${styles.badgeCaution}`}>!</span>
               <span className={styles.badgeDesc}>Vær ekstra varsom (lov/etikk)</span>
             </div>
           </div>

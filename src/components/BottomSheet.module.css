@@ -14,13 +14,32 @@
   pointer-events: auto;
 }
 
-/* Sheet — mobil bunnark */
+/*
+  Ytre innpakning: KUN posisjonering og transform-animasjon.
+  overflow:hidden er ALDRI her — overflow:hidden + transform på samme element
+  utløser en iOS Safari-compositing-feil der child-bakgrunner ikke males.
+*/
 .sheet {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 200;
+  transform: translateY(100%);
+  transition: transform 0.28s ease;
+  pointer-events: none;
+}
+
+.sheetOpen {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/*
+  Indre innpakning: visuell styling inkludert overflow:hidden.
+  Ingen transform her — det er trygt å klippe uten at GPU-laget forstyrrer painting.
+*/
+.inner {
   display: flex;
   flex-direction: column;
   max-height: 85dvh;
@@ -31,14 +50,6 @@
   border-radius: 16px 16px 0 0;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  transform: translateY(100%);
-  transition: transform 0.28s ease;
-  pointer-events: none;
-}
-
-.sheetOpen {
-  transform: translateY(0);
-  pointer-events: auto;
 }
 
 /* Handle-pil — kun mobil */
@@ -53,7 +64,7 @@
   border-radius: 2px;
 }
 
-/* Header — draggsone på mobil, tittel+lukk på desktop */
+/* Header — dragsone på mobil, tittel + lukk på desktop */
 .header {
   position: relative;
   flex-shrink: 0;
@@ -84,8 +95,11 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 1.5rem;
   padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  text-align: left;
 }
 
 /* Desktop: sentrert modal */
@@ -96,9 +110,6 @@
     bottom: auto;
     right: auto;
     width: min(600px, calc(100vw - 3rem));
-    max-height: min(80dvh, 720px);
-    border-radius: 12px;
-    border-bottom: 1px solid var(--border);
     transform: translate(-50%, calc(-50% + 12px));
     opacity: 0;
     transition: transform 0.22s ease, opacity 0.22s ease;
@@ -107,6 +118,12 @@
   .sheetOpen {
     transform: translate(-50%, -50%);
     opacity: 1;
+  }
+
+  .inner {
+    max-height: min(80dvh, 720px);
+    border-radius: 12px;
+    border-bottom: 1px solid var(--border);
   }
 
   /* Handle skjult på desktop */
