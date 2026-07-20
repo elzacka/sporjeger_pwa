@@ -31,7 +31,6 @@
   border-radius: 16px 16px 0 0;
   box-shadow: 0 -4px 32px rgba(0, 0, 0, 0.18);
   overflow: hidden;
-  will-change: transform;
   transform: translateY(100%);
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 100;
@@ -106,7 +105,6 @@
     max-height: min(80dvh, 720px);
     border-radius: 12px;
     border-bottom: 1px solid var(--border);
-    will-change: transform, opacity;
     transform: translate(-50%, calc(-50% + 16px));
     opacity: 0;
     transition: transform 0.22s ease, opacity 0.22s ease;
