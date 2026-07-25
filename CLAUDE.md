@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Sporjeger is a Norwegian OSINT tool catalog PWA. The UI is in Norwegian, while database values are English. The app is a pure read-only client: no auth, no writes. All catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key.
 
-**Current version: 2.1.2** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
+**Current version: 2.1.3** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
 
 Setup, commands, structure, and deploy are documented in `README.md` — do not duplicate them here.
 
@@ -24,7 +24,7 @@ Setup, commands, structure, and deploy are documented in `README.md` — do not 
 ### Data Flow
 
 1. **Supabase** stores tools/categories, read through views (`tools_with_categories`, `category_counts`) with anon key + public SELECT policies only
-2. **useTools** fetches in 1000-row batches, caches in localStorage (1h TTL), falls back to cache when offline or on fetch errors. On errors, `getTools` throws — never return partial lists, they would be cached as a complete catalog
+2. **useTools** fetches in 1000-row batches, caches in localStorage (no expiry, versioned), shows cache instantly and revalidates when online. On errors, `getTools` throws — never return partial lists, they would be cached as a complete catalog
 3. **useFilters** manages filter state (category, type, price, region, phase)
 4. **useSearch** runs Fuse.js fuzzy search with a cached pre-built index, no result limit (the visible counter must equal actual matches)
 
@@ -38,7 +38,7 @@ Setup, commands, structure, and deploy are documented in `README.md` — do not 
 
 ### Caching Rules
 
-- localStorage cache keys are versioned (`CACHE_VERSION` in `useTools.ts`). Bump it on any schema change in `src/types/database.ts` so users never see stale shapes; old keys are pruned automatically
+- localStorage cache keys are versioned (`CACHE_VERSION` in `useTools.ts`). Bump it on any schema change in `src/types/database.ts` so users never see stale shapes; old keys are pruned automatically. The cache never expires on read - offline users must always get the last known catalog (freshness comes from revalidating whenever the app is online)
 - Service worker (vite-plugin-pwa, autoUpdate) uses NetworkFirst for Supabase — the pattern must stay scoped to `/rest/v1/`, never widen it to all of `*.supabase.co` (would cache auth endpoints)
 - Base path is `/sporjeger_pwa/` (GitHub Pages) — never hardcode `/` in navigation; use `import.meta.env.BASE_URL`
 

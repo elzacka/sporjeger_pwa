@@ -4,17 +4,19 @@ import { getTools, getCategories } from '@/lib/supabase'
 
 // Cache-nøkler for localStorage
 // Bump CACHE_VERSION ved skjemaendringer i databasen/typene,
-// slik at brukere ikke får utdatert datastruktur i opptil 1 time
+// slik at brukere ikke får utdatert datastruktur
 const CACHE_VERSION = 2
 const CACHE_KEY_TOOLS = `sporjeger_tools_cache_v${CACHE_VERSION}`
 const CACHE_KEY_CATEGORIES = `sporjeger_categories_cache_v${CACHE_VERSION}`
-const CACHE_TTL = 1000 * 60 * 60 // 1 time
 
 interface CacheEntry<T> {
   data: T
   timestamp: number
 }
 
+// Bufret katalog utløper aldri ved lesing. En gammel katalog er alltid
+// bedre enn ingen katalog (offline-først). Ferskhet sikres ved at vi
+// alltid revaliderer mot Supabase når vi har nett.
 function getFromCache<T>(key: string): T | null {
   try {
     const cached = localStorage.getItem(key)
@@ -23,10 +25,6 @@ function getFromCache<T>(key: string): T | null {
     const entry: CacheEntry<T> = JSON.parse(cached)
     if (typeof entry?.timestamp !== 'number' || !Array.isArray(entry?.data)) {
       // Korrupt eller uventet form - forkast
-      localStorage.removeItem(key)
-      return null
-    }
-    if (Date.now() - entry.timestamp > CACHE_TTL) {
       localStorage.removeItem(key)
       return null
     }
@@ -96,24 +94,27 @@ export function useTools() {
     }
   }, [])
 
-  // Last data
+  // Last data: vis bufret katalog med en gang, revalider mot Supabase når vi har nett
   const loadData = useCallback(async () => {
-    setIsLoading(true)
     setError(null)
 
-    // Prøv cache først hvis offline
-    if (!navigator.onLine) {
-      const cachedTools = getFromCache<ToolWithCategories[]>(CACHE_KEY_TOOLS)
-      const cachedCategories = getFromCache<CategoryWithCount[]>(CACHE_KEY_CATEGORIES)
+    const cachedTools = getFromCache<ToolWithCategories[]>(CACHE_KEY_TOOLS)
+    const cachedCategories = getFromCache<CategoryWithCount[]>(CACHE_KEY_CATEGORIES)
+    const hasCache =
+      cachedTools !== null && cachedTools.length > 0 && cachedCategories !== null
 
-      if (cachedTools && cachedCategories) {
-        setTools(cachedTools)
-        setCategories(cachedCategories)
-        setIsLoading(false)
-        return
-      }
+    // Vis bufret katalog umiddelbart - ingen lasteskjerm ved oppstart
+    if (hasCache) {
+      setTools(cachedTools)
+      setCategories(cachedCategories)
+      setIsLoading(false)
+    } else {
+      setIsLoading(true)
     }
 
+    // Forsøk alltid henting - også uten nett. Service workeren (NetworkFirst)
+    // svarer fra sin cache når nettverket mangler, så dette er et ekstra
+    // sikkerhetsnett når localStorage er tom (f.eks. ryddet av operativsystemet).
     try {
       const [toolsData, categoriesData] = await Promise.all([
         getTools(),
@@ -129,14 +130,12 @@ export function useTools() {
     } catch (err) {
       console.error('Feil ved lasting av data:', err)
 
-      // Fall tilbake til cache ved feil
-      const cachedTools = getFromCache<ToolWithCategories[]>(CACHE_KEY_TOOLS)
-      const cachedCategories = getFromCache<CategoryWithCount[]>(CACHE_KEY_CATEGORIES)
-
-      if (cachedTools && cachedCategories) {
-        setTools(cachedTools)
-        setCategories(cachedCategories)
-        setError('Kunne ikke oppdatere data. Viser bufret versjon.')
+      // Bufret katalog er allerede vist - bare informer om at oppdatering feilet.
+      // Uten nett viser offline-banneret allerede situasjonen, så ingen ekstra melding.
+      if (hasCache) {
+        if (navigator.onLine) {
+          setError('Kunne ikke oppdatere katalogen. Viser bufret versjon.')
+        }
       } else {
         setError('Kunne ikke laste verktøy. Sjekk internettforbindelsen.')
       }
@@ -150,9 +149,13 @@ export function useTools() {
     loadData()
   }, [loadData])
 
-  // Tøm cache og last på nytt
+  // Tøm cache og last på nytt.
+  // Uten nett beholder vi cachen - å tømme den ville fjernet
+  // eneste tilgjengelige datakilde.
   const hardRefresh = useCallback(async () => {
-    clearToolsCache()
+    if (navigator.onLine) {
+      clearToolsCache()
+    }
     await loadData()
   }, [loadData])
 

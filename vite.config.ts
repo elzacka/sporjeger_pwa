@@ -76,9 +76,14 @@ export default defineConfig({
             handler: 'NetworkFirst',
             options: {
               cacheName: 'supabase-cache',
+              // Uten timeout kan trege nett (fly-wifi o.l.) henge forespørselen
+              // i stedet for å falle tilbake til cache
+              networkTimeoutSeconds: 4,
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 24 timer
+                // 30 dager: NetworkFirst revaliderer alltid når nett finnes,
+                // så lang levetid koster ingenting og redder offline-bruk
+                maxAgeSeconds: 60 * 60 * 24 * 30
               }
             }
           }

@@ -83,8 +83,11 @@ export async function getCategories(): Promise<CategoryWithCount[]> {
     .order('sort_order')
 
   if (error) {
+    // Kast videre slik at useTools kan falle tilbake til cache.
+    // Å returnere [] ville blitt lagret i cache og overskrevet
+    // en fungerende kategoriliste med en tom.
     console.error('Feil ved henting av kategorier:', error)
-    return []
+    throw new Error(`Kunne ikke hente kategorier: ${error.message}`)
   }
 
   return data ?? []
