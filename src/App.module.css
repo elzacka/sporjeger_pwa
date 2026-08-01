@@ -115,7 +115,9 @@
     padding: var(--space-md) var(--space-sm);
   }
 
-  .footer span:first-child {
+  /* Kun selve fottekst-etiketten skjules. Ikke bruk etterkommer-selektor
+     her: HelpGuide og hele guide-arket ligger inne i <footer>. */
+  .footerLabel {
     display: none;
   }
 }

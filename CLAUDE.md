@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Sporjeger is a Norwegian OSINT tool catalog PWA. The UI is in Norwegian, while database values are English. The app is a pure read-only client: no auth, no writes. All catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key.
+Sporjeger is a Norwegian OSINT tool catalog PWA. The app is a pure read-only client: no auth, no writes. All catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key.
 
-**Current version: 2.1.3** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
+Language split in the database: enum-style values are English (`tool_type`, `pricing_model`, `platforms`, `intel_cycle_phases`, `regions`) and get translated for display in `src/lib/i18n.ts`. Free-text content — `description` and `guide` — is stored in Norwegian klarspråk and rendered as-is.
+
+**Current version: 2.1.4** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
 
 Setup, commands, structure, and deploy are documented in `README.md` — do not duplicate them here.
 
@@ -35,6 +37,7 @@ Setup, commands, structure, and deploy are documented in `README.md` — do not 
 - **Filter constants**: `src/constants/filters.ts` (TOOL_TYPES, PRICING_MODELS, PLATFORMS, INTEL_PHASES, REGIONS)
 - **Single view**: no routing (hash routing and `#/admin` were removed in v2.0.0)
 - **Escape handling**: `BottomSheet` listens in capture phase and stops propagation so Escape closes the sheet without clearing search/filters in `CommandSearch` — preserve this if touching either
+- **CSS module scoping**: target elements by their own class, never with bare descendant selectors like `.footer span:first-child`. Only the leftmost class is hashed, so the tail matches any descendant — `HelpGuide` and its whole sheet render inside `<footer>`, and such a rule silently hid every badge in the guide below 600px (fixed in v2.1.4)
 
 ### Caching Rules
 

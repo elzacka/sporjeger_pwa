@@ -1,6 +1,6 @@
 # Sporjeger
 
-Norsk OSINT-katalog med over 350 verktøy for å finne informasjon i åpne kilder. Minimalistisk PWA.
+Norsk OSINT-katalog med over 340 verktøy for å finne informasjon i åpne kilder. Minimalistisk PWA.
 
 **Live:** https://elzacka.github.io/sporjeger_pwa/
 

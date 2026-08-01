@@ -80,7 +80,7 @@ export default function App() {
 
       <footer className={styles.footer}>
         <div className={styles.footerRow}>
-          <span>{t.ui.footer}</span>
+          <span className={styles.footerLabel}>{t.ui.footer}</span>
           <HelpGuide />
         </div>
         <a

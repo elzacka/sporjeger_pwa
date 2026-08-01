@@ -223,24 +223,13 @@
     height: 18px;
   }
 
-  /* Mobil: bytt ut chip+beskrivelse med én tekstlinje per rad */
+  /* Mobil: chipene vises som på desktop, men beskrivelsen kan bryte
+     over flere linjer. Toppjuster chipen så raden tåler linjebryting. */
   .badgeRow {
-    display: block;
+    align-items: flex-start;
   }
 
   .badge {
-    display: none;
-  }
-
-  .badgeRow::before {
-    content: attr(data-label) ": ";
-    font-family: var(--font-mono);
-    font-size: 0.67375rem;
-    font-weight: 500;
-    color: var(--text-primary);
-  }
-
-  .badgeDesc {
-    display: inline;
+    margin-top: 1px;
   }
 }
