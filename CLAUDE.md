@@ -1,69 +1,29 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Overview
 
-## Project Overview
+Sporjeger is a Norwegian OSINT tool catalog PWA: pure read-only client, no auth, no writes. Catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key — not through this app.
 
-Sporjeger is a Norwegian OSINT tool catalog PWA. The app is a pure read-only client: no auth, no writes. All catalog maintenance (Bellingcat sync, enrichment, URL health checks, quality sweeps) runs through scheduled Claude tasks that talk directly to Supabase with the service key.
+Database language split: enum-style columns (`tool_type`, `pricing_model`, `platforms`, `intel_cycle_phases`, `regions`) are English and translated for display in `src/lib/i18n.ts`; `description` and `guide` are stored in Norwegian klarspråk and rendered as-is.
 
-Language split in the database: enum-style values are English (`tool_type`, `pricing_model`, `platforms`, `intel_cycle_phases`, `regions`) and get translated for display in `src/lib/i18n.ts`. Free-text content — `description` and `guide` — is stored in Norwegian klarspråk and rendered as-is.
+Version lives in `package.json`.
 
-**Current version: 2.1.4** — update this line and `package.json` together (semver: PATCH fixes, MINOR features, MAJOR breaking/removals).
+Setup, commands, structure and deploy are documented in `README.md`.
 
-Setup, commands, structure, and deploy are documented in `README.md` — do not duplicate them here.
+## Working conventions
 
-## Working Conventions
+- Fonts and icons are self-hosted (`@fontsource/*`, inline SVG) — the meta-CSP in `index.html` blocks external CDN resources
+- No ESLint: `typescript-eslint` doesn't yet support TypeScript 7. `tsc -b` (strict, `noUnusedLocals`, `noUnusedParameters`) is the check — run `npm run build`; there is no `npm run lint`
+- Test in the local dev server and let the owner verify before committing
 
-- Norwegian UI text follows klarspråk and always uses æ, ø, å — never oe, o, a/aa
-- No emojis in code, UI, docs, or commits
-- Fonts and icons are self-hosted (`@fontsource/*` imported in `main.tsx`, SVG icons inline) — never add external CDN resources; the meta-CSP in `index.html` will block them
-- Commit format: `type: description` (feat/fix/docs/refactor/test), no emoji
-- Always test in the local dev server and let the user verify before committing
-- No ESLint — `typescript-eslint` does not yet support TypeScript 7. Type safety and unused-variable checks are enforced by `tsc -b` (strict mode, `noUnusedLocals`, `noUnusedParameters`). Run `npm run build` before marking any task complete; there is no separate `npm run lint`.
+## Invariants
 
-## Architecture
-
-### Data Flow
-
-1. **Supabase** stores tools/categories, read through views (`tools_with_categories`, `category_counts`) with anon key + public SELECT policies only
-2. **useTools** fetches in 1000-row batches, caches in localStorage (no expiry, versioned), shows cache instantly and revalidates when online. On errors, `getTools` throws — never return partial lists, they would be cached as a complete catalog
-3. **useFilters** manages filter state (category, type, price, region, phase)
-4. **useSearch** runs Fuse.js fuzzy search with a cached pre-built index, no result limit (the visible counter must equal actual matches)
-
-### Key Patterns
-
-- **Path alias**: `@/` maps to `src/`
-- **i18n**: `src/lib/i18n.ts` holds all Norwegian UI strings and category translations
-- **Filter constants**: `src/constants/filters.ts` (TOOL_TYPES, PRICING_MODELS, PLATFORMS, INTEL_PHASES, REGIONS)
-- **Single view**: no routing (hash routing and `#/admin` were removed in v2.0.0)
-- **Escape handling**: `BottomSheet` listens in capture phase and stops propagation so Escape closes the sheet without clearing search/filters in `CommandSearch` — preserve this if touching either
-- **CSS module scoping**: target elements by their own class, never with bare descendant selectors like `.footer span:first-child`. Only the leftmost class is hashed, so the tail matches any descendant — `HelpGuide` and its whole sheet render inside `<footer>`, and such a rule silently hid every badge in the guide below 600px (fixed in v2.1.4)
-
-### Caching Rules
-
-- localStorage cache keys are versioned (`CACHE_VERSION` in `useTools.ts`). Bump it on any schema change in `src/types/database.ts` so users never see stale shapes; old keys are pruned automatically. The cache never expires on read - offline users must always get the last known catalog (freshness comes from revalidating whenever the app is online)
-- Service worker (vite-plugin-pwa, autoUpdate) uses NetworkFirst for Supabase — the pattern must stay scoped to `/rest/v1/`, never widen it to all of `*.supabase.co` (would cache auth endpoints)
-- Base path is `/sporjeger_pwa/` (GitHub Pages) — never hardcode `/` in navigation; use `import.meta.env.BASE_URL`
-
-### Database Types
-
-Defined in `src/types/database.ts`:
-
-- `ToolType`: web, terminal, desktop, mobile, browser_extension, api, dork, database
-- `PricingModel`: free, freemium, paid (freemium renders as «Gratish» — intentional wordplay, keep it)
-- `IntelCyclePhase`: planning, collection, processing, analysis, dissemination
-- `Platform`: windows, macos, linux, android, ios, web, webapp
-- `guide`: optional Markdown per tool, rendered by the `Markdown` component, shown via «Vis mer» in ToolCard
-- `caution_level`: 0 by default; 1 shows an amber indicator on ToolCard
-
-### Markdown Renderer Security Invariants
-
-`src/components/Markdown.tsx` renders tool guides (headers, bold/italic, links, autolinks, lists, inline code, fenced code blocks, escaped characters) into `dangerouslySetInnerHTML`. Non-negotiable invariants:
-
-- HTML-escape everything — including `"` and `'` — before any parsing (attribute-injection defense)
-- Link hrefs are allowlisted to `http(s)://`; other schemes render as plain text
-- Guide content comes from the database and must stay treated as untrusted
-
-## Supabase Access Model
-
-RLS: public SELECT only; zero write policies for anon/authenticated roles (dropped in migration `remove_authenticated_write_policies`). Writes happen exclusively via the service key in scheduled Claude tasks. Never reintroduce write policies for the `authenticated` role.
+- `getTools` throws rather than returning a partial list — a partial list would get cached as the complete catalog
+- localStorage cache keys carry `CACHE_VERSION` (`useTools.ts`) — bump it on any `src/types/database.ts` schema change
+- Service worker NetworkFirst pattern stays scoped to `/rest/v1/`, never widened to all of `*.supabase.co` (would cache auth endpoints)
+- Base path is `/sporjeger_pwa/` (GitHub Pages) — use `import.meta.env.BASE_URL`, never hardcode `/`
+- `BottomSheet` listens for Escape in capture phase and stops propagation, so Escape closes the sheet without clearing search/filters in `CommandSearch`
+- CSS Modules hash only the leftmost class — a bare descendant selector like `.footer span:first-child` matches any nested component under `<footer>`; target elements by their own class
+- `PricingModel.freemium` renders as «Gratish» — intentional wordplay, keep it
+- `src/components/Markdown.tsx` renders untrusted guide content into `dangerouslySetInnerHTML`: HTML-escape everything (including `"`/`'`) before parsing, and allowlist link hrefs to `http(s)://`
+- RLS: public SELECT only, zero write policies for anon/authenticated; never reintroduce write policies for `authenticated`
