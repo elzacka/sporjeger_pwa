@@ -1,4 +1,4 @@
-# CLAUDE.md
+# Sporjeger
 
 ## Overview
 
@@ -20,6 +20,8 @@ Setup, commands, structure and deploy are documented in `README.md`.
 
 - `getTools` throws rather than returning a partial list — a partial list would get cached as the complete catalog
 - localStorage cache keys carry `CACHE_VERSION` (`useTools.ts`) — bump it on any `src/types/database.ts` schema change
+- The cache never expires on read: offline users always get the last known catalog; freshness comes from revalidating when online
+- Search has no result limit: the visible counter equals the actual matches
 - Service worker NetworkFirst pattern stays scoped to `/rest/v1/`, never widened to all of `*.supabase.co` (would cache auth endpoints)
 - Base path is `/sporjeger_pwa/` (GitHub Pages) — use `import.meta.env.BASE_URL`, never hardcode `/`
 - `BottomSheet` listens for Escape in capture phase and stops propagation, so Escape closes the sheet without clearing search/filters in `CommandSearch`
