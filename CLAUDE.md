@@ -10,11 +10,14 @@ Version lives in `package.json`.
 
 Setup, commands, structure and deploy are documented in `README.md`.
 
+Security scope: OWASP ASVS L1 (latest released edition) plus L2 for Markdown sanitising, authorization at RLS and service-key handling; Top 10, WSTG, API Security Top 10 (Supabase PostgREST as `anon`), CI/CD Top 10. LLM and Agentic Top 10 apply only to the off-app maintenance tasks, not to the app.
+
 ## Working conventions
 
 - Fonts and icons are self-hosted (`@fontsource/*`, inline SVG) — the meta-CSP in `index.html` blocks external CDN resources
-- No ESLint: `typescript-eslint` doesn't yet support TypeScript 7. `tsc -b` (strict, `noUnusedLocals`, `noUnusedParameters`) is the check — run `npm run build`; there is no `npm run lint`
-- Test in the local dev server and let the owner verify before committing
+- Verify: `npm run build` (`tsc -b` strict with `noUnusedLocals`/`noUnusedParameters`, then Vite; same as CI). No tests, no `npm run lint`; check UI in `npm run dev` at `localhost:5174/sporjeger_pwa/`
+- No ESLint while `typescript-eslint`'s peer range excludes the TypeScript major in `package.json`; check: `npm view typescript-eslint peerDependencies.typescript`
+- Test in the local dev server and let the owner verify before committing (differs from global)
 
 ## Invariants
 
