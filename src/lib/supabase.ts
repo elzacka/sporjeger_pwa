@@ -92,19 +92,3 @@ export async function getCategories(): Promise<CategoryWithCount[]> {
 
   return data ?? []
 }
-
-// Hent et enkelt verktøy via slug
-export async function getToolBySlug(slug: string): Promise<ToolWithCategories | null> {
-  const { data, error } = await supabase
-    .from('tools_with_categories')
-    .select('*')
-    .eq('slug', slug)
-    .single()
-
-  if (error) {
-    console.error('Feil ved henting av verktøy:', error)
-    return null
-  }
-
-  return data
-}
