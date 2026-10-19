@@ -12,6 +12,8 @@ Databasen i Supabase vedlikeholdes automatisk:
 - Et "team" med KI-agenter i Claude kombinert med en serie scheduled tasks
 - De synkroniserer mot Bellingcat Toolkit, kontrollerer kvalitet, sjekker lenker og oversetter beskrivelser til norsk klarspråk
 
+Personvern og besøksstatistikk: Se [PERSONVERN.md](PERSONVERN.md).
+
 ## Funksjoner
 
 - Fuzzy-søk med naturlig språk
