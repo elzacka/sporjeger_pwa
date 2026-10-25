@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import App from './App'
-import { countVisit } from './lib/visitCount'
 // Selvhostede fonter (offline-først, ingen forespørsler til Google)
 import '@fontsource/dm-mono/400.css'
 import '@fontsource/dm-mono/500.css'
@@ -30,5 +29,3 @@ createRoot(rootElement).render(
     </ErrorBoundary>
   </StrictMode>
 )
-
-countVisit(import.meta.env.BASE_URL)
